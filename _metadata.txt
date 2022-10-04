@@ -1,0 +1,22 @@
+generated-with: Easy Java/Javascript Simulations, version 6.1 BETA, build 201115. Visit http://www.um.es/fem/Ejs
+title: 1D Collisions
+logo-image: 1Dcollisions-thumbnail(small).png
+author: Zhiming Darren TAN
+copyright: Open Source Physics
+author-image: ScienceSamuraiDarrenTanSquareSmall.png
+source: Collisions1D.ejss
+main-script: 
+main-simulation: Collisions1D_Simulation.xhtml
+available-languages: 
+html-description: Collisions1D_Intro_2.html
+html-description: Collisions1D_Intro_1.html
+html-contents: Collisions1D_Contents.xhtml
+html-main: Collisions1D.xhtml
+page-title: Introduction
+page-index: Collisions1D_Intro_1.html
+page-title: Activities
+page-index: Collisions1D_Intro_2.html
+page-title: 1D Collisions
+page-index: Collisions1D_Simulation.xhtml
+resource: 1Dcollisions-thumbnail(small).png
+resource: ScienceSamuraiDarrenTanSquareSmall.png

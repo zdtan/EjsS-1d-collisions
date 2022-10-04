@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+<ModulePrefs
+title="Collisions1D"
+author="Zhiming Darren TAN"
+description="Collisions between two point masses, confined to a single spatial dimension. Users can analyse several selected examples in "quiz mode"."
+screenshot="./1Dcollisions-thumbnail(small).png"
+thumbnail="./1Dcollisions-thumbnail(small).png">
+<Require feature="opensocial-0.9"/>
+<Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html" href="Collisions1D_Simulation.xhtml"/>
+</Module>

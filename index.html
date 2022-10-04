@@ -1,0 +1,1363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>1D Collisions</title>
+    <link rel="stylesheet"  type="text/css" href="_ejs_library/css/ejss.css" />
+    <script src="_ejs_library/scripts/common_script.js"></script>
+    <script src="_ejs_library/scripts/textresizedetector.js"></script>
+    <script src="_ejs_library/ejsS.v1.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+function Collisions1D(_topFrame,_libraryPath,_codebasePath, _inputParameters) {
+  var _model = EJSS_CORE.createAnimationLMS();
+  var _view;
+  var _isPlaying = false;
+  var _isPaused = true;
+  var _isMobile = (navigator===undefined) ? false : navigator.userAgent.match(/iPhone|iPad|iPod|Android|BlackBerry|Opera Mini|IEMobile/i);
+
+var _stringProperties = {};
+  var _tools = EJSS_CORE.Tools;
+  function _play()  { _isPaused = false; _isPlaying = true;  _model.play();  }
+  function _pause() { _isPaused = true;  _isPlaying = false; _model.pause(); }
+  function _step()  { _pause();  _model.step(); }
+  function _reset() { _model.reset();  _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); }
+  _model._play  = _play;
+  _model._pause = _pause;
+  _model._step  = _step;
+  _model._reset = _reset;
+  function _update() { _model.update(); }
+  function _initialize() { _model.initialize(); }
+  function _setFPS(_fps) { _model.setFPS(_fps); }
+  function _setDelay(_delay) { _model.setDelay(_delay); }
+  function _setStepsPerDisplay(_spd) { _model.setStepsPerDisplay(_spd); }
+  function _setUpdateView(_updateView) { _model.setUpdateView(_updateView); }
+  function _setAutoplay(_auto) { _model.setAutoplay(_auto); }
+  function _println(_message) { console.log(_message); }
+
+  function _breakAfterThisPage() { _model.setShouldBreak(true); }
+
+  function _resetSolvers() { if (_model.resetSolvers) _model.resetSolvers(); }
+
+  function _saveText(name,type,content) { if (_model.saveText) _model.saveText(name,type,content); }
+
+  function _saveState(name) { if (_model.saveState) _model.saveState(name); }
+
+  function _saveImage(name,panelname) { if (_model.saveImage) _model.saveImage(name,panelname); }
+
+  function _readState(url,type) { if (_model.readState) _model.readState(url,type); }
+
+  function _readText(url,type,varname) { if (_model.readText) _model.readText(url,type,varname); }
+
+  function _getStringProperty(propertyName) {
+    var _value = _stringProperties[propertyName];
+    if (_value===undefined) return propertyName;
+    else return _value;
+  }
+  var __pagesEnabled = [];
+  function _setPageEnabled(pageName,enabled) { __pagesEnabled[pageName] = enabled; }
+
+  var m1; // EjsS Model.Variables.Variables.m1
+  var m2; // EjsS Model.Variables.Variables.m2
+  var v1; // EjsS Model.Variables.Variables.v1
+  var v2; // EjsS Model.Variables.Variables.v2
+  var Cres; // EjsS Model.Variables.Variables.Cres
+  var t; // EjsS Model.Variables.Variables.t
+  var dt; // EjsS Model.Variables.Variables.dt
+  var x1; // EjsS Model.Variables.Variables.x1
+  var x2; // EjsS Model.Variables.Variables.x2
+  var viz_mass; // EjsS Model.Variables.Variables.viz_mass
+  var viz_vel; // EjsS Model.Variables.Variables.viz_vel
+  var quizmode; // EjsS Model.Variables.Variables.quizmode
+
+  var P1; // EjsS Model.Variables.Constrained Vars.P1
+  var P2; // EjsS Model.Variables.Constrained Vars.P2
+  var T1; // EjsS Model.Variables.Constrained Vars.T1
+  var T2; // EjsS Model.Variables.Constrained Vars.T2
+  var E; // EjsS Model.Variables.Constrained Vars.E
+
+  var stage; // EjsS Model.Variables.Quiz Vars.stage
+  var solved; // EjsS Model.Variables.Quiz Vars.solved
+  var displaystage; // EjsS Model.Variables.Quiz Vars.displaystage
+  var selected; // EjsS Model.Variables.Quiz Vars.selected
+  var bg_slider; // EjsS Model.Variables.Quiz Vars.bg_slider
+  var v2target; // EjsS Model.Variables.Quiz Vars.v2target
+  var v1answer; // EjsS Model.Variables.Quiz Vars.v1answer
+  var txtElasticity; // EjsS Model.Variables.Quiz Vars.txtElasticity
+
+  var _privateOdesList;
+  var _ODEi_evolution1;
+  var userEvents1=[];
+
+  _model.getOdes = function() { return [_ODEi_evolution1]; };
+
+  _model.removeEvents = function(){
+    userEvents1=[];
+  };
+
+  function _serialize() { return _model.serialize(); }
+
+  _model._userSerialize = function() {
+    return {
+      m1 : m1,
+      m2 : m2,
+      v1 : v1,
+      v2 : v2,
+      Cres : Cres,
+      t : t,
+      dt : dt,
+      x1 : x1,
+      x2 : x2,
+      viz_mass : viz_mass,
+      viz_vel : viz_vel,
+      quizmode : quizmode,
+      P1 : P1,
+      P2 : P2,
+      T1 : T1,
+      T2 : T2,
+      E : E,
+      stage : stage,
+      solved : solved,
+      displaystage : displaystage,
+      selected : selected,
+      bg_slider : bg_slider,
+      v2target : v2target,
+      v1answer : v1answer,
+      txtElasticity : txtElasticity
+    };
+  };
+
+  _model._readParameters = function(json) {
+    if(typeof json.m1 != "undefined") m1 = json.m1;
+    if(typeof json.m2 != "undefined") m2 = json.m2;
+    if(typeof json.v1 != "undefined") v1 = json.v1;
+    if(typeof json.v2 != "undefined") v2 = json.v2;
+    if(typeof json.Cres != "undefined") Cres = json.Cres;
+    if(typeof json.t != "undefined") t = json.t;
+    if(typeof json.dt != "undefined") dt = json.dt;
+    if(typeof json.x1 != "undefined") x1 = json.x1;
+    if(typeof json.x2 != "undefined") x2 = json.x2;
+    if(typeof json.viz_mass != "undefined") viz_mass = json.viz_mass;
+    if(typeof json.viz_vel != "undefined") viz_vel = json.viz_vel;
+    if(typeof json.quizmode != "undefined") quizmode = json.quizmode;
+    if(typeof json.P1 != "undefined") P1 = json.P1;
+    if(typeof json.P2 != "undefined") P2 = json.P2;
+    if(typeof json.T1 != "undefined") T1 = json.T1;
+    if(typeof json.T2 != "undefined") T2 = json.T2;
+    if(typeof json.E != "undefined") E = json.E;
+    if(typeof json.stage != "undefined") stage = json.stage;
+    if(typeof json.solved != "undefined") solved = json.solved;
+    if(typeof json.displaystage != "undefined") displaystage = json.displaystage;
+    if(typeof json.selected != "undefined") selected = json.selected;
+    if(typeof json.bg_slider != "undefined") bg_slider = json.bg_slider;
+    if(typeof json.v2target != "undefined") v2target = json.v2target;
+    if(typeof json.v1answer != "undefined") v1answer = json.v1answer;
+    if(typeof json.txtElasticity != "undefined") txtElasticity = json.txtElasticity;
+  };
+
+  function _unserialize(json) { return _model.unserialize(json); }
+
+  _model.addToReset(function() {
+    __pagesEnabled["Init Page"] = true;
+    __pagesEnabled["GraphAxes"] = true;
+    __pagesEnabled["Evol Page"] = true;
+    __pagesEnabled["Collision"] = true;
+    __pagesEnabled["Constraints"] = true;
+  });
+
+  _model.addToReset(function() {
+    m1 = 1; // EjsS Model.Variables.Variables.m1
+    m2 = 1; // EjsS Model.Variables.Variables.m2
+    v1 = 1; // EjsS Model.Variables.Variables.v1
+    v2 = 0; // EjsS Model.Variables.Variables.v2
+    Cres = 1; // EjsS Model.Variables.Variables.Cres
+    t = 0; // EjsS Model.Variables.Variables.t
+    dt = 0.01; // EjsS Model.Variables.Variables.dt
+    x1 = -1; // EjsS Model.Variables.Variables.x1
+    x2 = 0; // EjsS Model.Variables.Variables.x2
+    viz_mass = 0.1; // EjsS Model.Variables.Variables.viz_mass
+    viz_vel = 0.4; // EjsS Model.Variables.Variables.viz_vel
+    quizmode = false; // EjsS Model.Variables.Variables.quizmode
+  });
+
+  _model.addToReset(function() {
+    P1 = m1*v1; // EjsS Model.Variables.Constrained Vars.P1
+    P2 = m2*v2; // EjsS Model.Variables.Constrained Vars.P2
+    T1 = 0.5*m1*v1*v1; // EjsS Model.Variables.Constrained Vars.T1
+    T2 = 0.5*m2*v2*v2; // EjsS Model.Variables.Constrained Vars.T2
+    E = T1+T2; // EjsS Model.Variables.Constrained Vars.E
+  });
+
+  _model.addToReset(function() {
+    stage = 0; // EjsS Model.Variables.Quiz Vars.stage
+    solved = false; // EjsS Model.Variables.Quiz Vars.solved
+    displaystage = ""; // EjsS Model.Variables.Quiz Vars.displaystage
+    selected = new Array(1); // EjsS Model.Variables.Quiz Vars.selected
+    (function () {
+      var _i0;
+      for (_i0=0; _i0<1; _i0+=1) {  // EjsS Model.Variables.Quiz Vars.selected
+        selected[_i0] = "";  // EjsS Model.Variables.Quiz Vars.selected
+      }
+    }());
+    bg_slider = "White"; // EjsS Model.Variables.Quiz Vars.bg_slider
+    v2target = 0; // EjsS Model.Variables.Quiz Vars.v2target
+    v1answer = 0; // EjsS Model.Variables.Quiz Vars.v1answer
+    txtElasticity = ""; // EjsS Model.Variables.Quiz Vars.txtElasticity
+  });
+
+  if (_inputParameters) {
+    _inputParameters = _model.parseInputParameters(_inputParameters);
+    if (_inputParameters) _model.addToReset(function() { _model._readParameters(_inputParameters); });
+  }
+
+  _model.addToReset(function() {
+    _privateOdesList=[];
+    _ODEi_evolution1 = _ODE_evolution1();
+    _privateOdesList.push(_ODEi_evolution1);
+  });
+
+  _model.addToReset(function() {
+    _model.setAutoplay(false);
+    _model.setPauseOnPageExit(true);
+    _model.setFPS(20);
+    _model.setStepsPerDisplay(1);
+  });
+
+  function setup(stage) {  // > CustomCode.Lib Page:1
+    switch(stage) {  // > CustomCode.Lib Page:2
+      case 0:  // > CustomCode.Lib Page:3
+        solved = false;  // > CustomCode.Lib Page:4
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:5
+        if (confirm("Perfectly inelastic collision of equal masses."+"\n"  // > CustomCode.Lib Page:6
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:7
+          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:8
+          v2target = 2.0;  // > CustomCode.Lib Page:9
+          m1 = 1;  // > CustomCode.Lib Page:10
+          x1 = -1;  // > CustomCode.Lib Page:11
+          m2 = 1;  // > CustomCode.Lib Page:12
+          x2 = 0;  // > CustomCode.Lib Page:13
+          v2 = 0;  // > CustomCode.Lib Page:14
+          Cres = 0;  // > CustomCode.Lib Page:15
+          v1answer = 4.0;  // > CustomCode.Lib Page:16
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:17
+          quizmode = false;  // > CustomCode.Lib Page:18
+        }  // > CustomCode.Lib Page:19
+        break;  // > CustomCode.Lib Page:20
+      case 1:  // > CustomCode.Lib Page:21
+        solved = false;  // > CustomCode.Lib Page:22
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:23
+        if (confirm("Perfectly inelastic collision of unequal masses."+"\n"  // > CustomCode.Lib Page:24
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:25
+          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:26
+          v2target = 1.0;  // > CustomCode.Lib Page:27
+          m1 = 1;  // > CustomCode.Lib Page:28
+          x1 = -1;  // > CustomCode.Lib Page:29
+          m2 = 3;  // > CustomCode.Lib Page:30
+          x2 = 0;  // > CustomCode.Lib Page:31
+          v2 = 0;  // > CustomCode.Lib Page:32
+          Cres = 0;  // > CustomCode.Lib Page:33
+          v1answer = 4.0;  // > CustomCode.Lib Page:34
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:35
+          quizmode = false;  // > CustomCode.Lib Page:36
+        }  // > CustomCode.Lib Page:37
+        break;  // > CustomCode.Lib Page:38
+      case 2:  // > CustomCode.Lib Page:39
+        solved = false;  // > CustomCode.Lib Page:40
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:41
+        if (confirm("Perfectly elastic collision of equal masses."+"\n"  // > CustomCode.Lib Page:42
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:43
+          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:44
+          v2target = 2.0;  // > CustomCode.Lib Page:45
+          m1 = 1;  // > CustomCode.Lib Page:46
+          x1 = -1;  // > CustomCode.Lib Page:47
+          m2 = 1;  // > CustomCode.Lib Page:48
+          x2 = 0;  // > CustomCode.Lib Page:49
+          v2 = 0;  // > CustomCode.Lib Page:50
+          Cres = 1;  // > CustomCode.Lib Page:51
+          v1answer = 2.0;  // > CustomCode.Lib Page:52
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:53
+          quizmode = false;  // > CustomCode.Lib Page:54
+        }  // > CustomCode.Lib Page:55
+        break;  // > CustomCode.Lib Page:56
+      case 3:  // > CustomCode.Lib Page:57
+        solved = false;  // > CustomCode.Lib Page:58
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:59
+        if (confirm("Perfectly elastic collision of unequal masses."+"\n"  // > CustomCode.Lib Page:60
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:61
+          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:62
+          v2target = 1.0;  // > CustomCode.Lib Page:63
+          m1 = 1;  // > CustomCode.Lib Page:64
+          x1 = -1;  // > CustomCode.Lib Page:65
+          m2 = 2;  // > CustomCode.Lib Page:66
+          x2 = 0;  // > CustomCode.Lib Page:67
+          v2 = 0;  // > CustomCode.Lib Page:68
+          Cres = 1;  // > CustomCode.Lib Page:69
+          v1answer = 1.5;  // > CustomCode.Lib Page:70
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:71
+          quizmode = false;  // > CustomCode.Lib Page:72
+        }  // > CustomCode.Lib Page:73
+        break;  // > CustomCode.Lib Page:74
+      case 4:  // > CustomCode.Lib Page:75
+        solved = false;  // > CustomCode.Lib Page:76
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:77
+        if (confirm("Perfectly inelastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:78
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:79
+          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:80
+          v2target = 1.0;  // > CustomCode.Lib Page:81
+          m1 = 1;  // > CustomCode.Lib Page:82
+          x1 = -1;  // > CustomCode.Lib Page:83
+          m2 = 1;  // > CustomCode.Lib Page:84
+          x2 = 0;  // > CustomCode.Lib Page:85
+          v2 = -1;  // > CustomCode.Lib Page:86
+          Cres = 0;  // > CustomCode.Lib Page:87
+          v1answer = 3.0;  // > CustomCode.Lib Page:88
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:89
+          quizmode = false;  // > CustomCode.Lib Page:90
+        }  // > CustomCode.Lib Page:91
+        break;  // > CustomCode.Lib Page:92
+      case 5:  // > CustomCode.Lib Page:93
+        solved = false;  // > CustomCode.Lib Page:94
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:95
+        if (confirm("Perfectly elastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:96
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:97
+          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:98
+          v2target = 2.0;  // > CustomCode.Lib Page:99
+          m1 = 1;  // > CustomCode.Lib Page:100
+          x1 = -1;  // > CustomCode.Lib Page:101
+          m2 = 1;  // > CustomCode.Lib Page:102
+          x2 = 0;  // > CustomCode.Lib Page:103
+          v2 = -0.5;  // > CustomCode.Lib Page:104
+          Cres = 1;  // > CustomCode.Lib Page:105
+          v1answer = 2.0;  // > CustomCode.Lib Page:106
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:107
+          quizmode = false;  // > CustomCode.Lib Page:108
+        }  // > CustomCode.Lib Page:109
+        break;  // > CustomCode.Lib Page:110
+      case 6:  // > CustomCode.Lib Page:111
+        solved = false;  // > CustomCode.Lib Page:112
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:113
+        if (confirm("Perfectly elastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:114
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:115
+          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:116
+          v2target = 2.0;  // > CustomCode.Lib Page:117
+          m1 = 1;  // > CustomCode.Lib Page:118
+          x1 = -1;  // > CustomCode.Lib Page:119
+          m2 = 1;  // > CustomCode.Lib Page:120
+          x2 = 0;  // > CustomCode.Lib Page:121
+          v2 = 0.5;  // > CustomCode.Lib Page:122
+          Cres = 1;  // > CustomCode.Lib Page:123
+          v1answer = 2.0;  // > CustomCode.Lib Page:124
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:125
+          quizmode = false;  // > CustomCode.Lib Page:126
+        }  // > CustomCode.Lib Page:127
+        break;  // > CustomCode.Lib Page:128
+      case 7:  // > CustomCode.Lib Page:129
+        solved = false;  // > CustomCode.Lib Page:130
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:131
+        if (confirm("Perfectly elastic collision of unequal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:132
+        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:133
+          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:134
+          v2target = 2.0;  // > CustomCode.Lib Page:135
+          m1 = 3;  // > CustomCode.Lib Page:136
+          x1 = -1;  // > CustomCode.Lib Page:137
+          m2 = 2;  // > CustomCode.Lib Page:138
+          x2 = 0;  // > CustomCode.Lib Page:139
+          v2 = -1;  // > CustomCode.Lib Page:140
+          Cres = 1;  // > CustomCode.Lib Page:141
+          v1answer = 1.5;  // > CustomCode.Lib Page:142
+        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:143
+          quizmode = false;  // > CustomCode.Lib Page:144
+        }  // > CustomCode.Lib Page:145
+        break;  // > CustomCode.Lib Page:146
+      default:  // > CustomCode.Lib Page:147
+        alert("If you see this message, there's probably an error in the code.");  // > CustomCode.Lib Page:148
+    }  // > CustomCode.Lib Page:149
+  }  // > CustomCode.Lib Page:150
+
+  function stage_Switcher() {  // > CustomCode.Stage Switcher:1
+    stage = parseInt(selected[0].slice(-1));  // > CustomCode.Stage Switcher:2
+    //alert(stage);  // > CustomCode.Stage Switcher:3
+    setup(stage);  // > CustomCode.Stage Switcher:4
+  }  // > CustomCode.Stage Switcher:5
+
+  _model.addToInitialization(function() {
+    if (!__pagesEnabled["Init Page"]) return;
+    if (quizmode) {  // > Initialization.Init Page:1
+      setup(stage);  // > Initialization.Init Page:2
+    } else {  // > Initialization.Init Page:3
+      //no need highlighting  // > Initialization.Init Page:4
+      bg_slider = "White";  // > Initialization.Init Page:5
+    }  // > Initialization.Init Page:6
+  });
+
+  _model.addToInitialization(function() {
+    if (!__pagesEnabled["GraphAxes"]) return;
+    //position-time  // > Initialization.GraphAxes:1
+    //_view.plottingPanelPos.getAxisX().setPosition([0.0,0.4]);  //slightly below midline  // > Initialization.GraphAxes:2
+    _view.plottingPanelPos.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:3
+    _view.plottingPanelPos.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:4
+    _view.plottingPanelPos.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:5
+    //velocity-time  // > Initialization.GraphAxes:6
+    _view.plottingPanelVel.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:7
+    _view.plottingPanelVel.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:8
+    _view.plottingPanelVel.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:9
+    _view.plottingPanelVel.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:10
+    //momentum-time  // > Initialization.GraphAxes:11
+    //_view.plottingPanelMom.getAxisX().setPosition([0.0,0.5]);  // > Initialization.GraphAxes:12
+    _view.plottingPanelMom.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:13
+    _view.plottingPanelMom.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:14
+    _view.plottingPanelMom.getTitleY().setPosition([1,0.70]);  // > Initialization.GraphAxes:15
+    //energy-time  // > Initialization.GraphAxes:16
+    _view.plottingPanelErg.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:17
+    _view.plottingPanelErg.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:18
+    _view.plottingPanelErg.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:19
+    //_view.plottingPanelErg.getAxisY().setPosition([1,0.055]);  //y-value accounts for MarginY?  // > Initialization.GraphAxes:20
+    _view.plottingPanelErg.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:21
+  });
+
+  _model.addToInitialization(function() {
+    _initializeSolvers();
+  });
+
+  _model.addToEvolution(function() {
+    if (!__pagesEnabled["Evol Page"]) return;
+    _ODEi_evolution1.step();
+  });
+
+  _model.addToFixedRelations(function() { _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); });
+
+  _model.addToFixedRelations(function() {
+    if (!__pagesEnabled["Constraints"]) return;
+    P1=m1*v1;  // > FixedRelations.Constraints:1
+    P2=m2*v2;  // > FixedRelations.Constraints:2
+    T1=0.5*m1*v1*v1;  // > FixedRelations.Constraints:3
+    T2=0.5*m2*v2*v2;  // > FixedRelations.Constraints:4
+    E=T1+T2;  // > FixedRelations.Constraints:5
+      // > FixedRelations.Constraints:6
+    displaystage = "";  // > FixedRelations.Constraints:7
+    if (quizmode) {  // > FixedRelations.Constraints:8
+      displaystage = "stage="+_view._format(stage,"0");  // > FixedRelations.Constraints:9
+    }  // > FixedRelations.Constraints:10
+  });
+
+  _model.addToFixedRelations(function() { _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); });
+
+  function _initializeSolvers() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].initializeSolver();
+  }
+
+  function _automaticResetSolvers() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].automaticResetSolver();
+  }
+
+  _model.resetSolvers = function() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].resetSolver();
+  };
+
+  _getODE = function (_odeName) {
+    if (_odeName=="Evol Page") return _ODEi_evolution1;
+    return null;
+  }
+
+  function _getEventSolver(_odeName) {
+    var ode = _getODE(_odeName);
+    if (ode===null) return null;
+    return ode.getEventSolver();
+  }
+
+  function _setSolverClass(_odeName, _engine) {
+    var ode = _getODE(_odeName);
+    if (ode===null) return;
+    if (!_engine.setODE) {
+      var classname = _engine.toLowerCase();
+      if      (classname.indexOf("boga")>=0)   _engine = EJSS_ODE_SOLVERS.bogackiShampine23;
+      else if (classname.indexOf("cash")>=0)   _engine = EJSS_ODE_SOLVERS.cashKarp45;
+      else if (classname.indexOf("dopri5")>=0) _engine = EJSS_ODE_SOLVERS.dopri5;
+      else if (classname.indexOf("dopri8")>=0) _engine = EJSS_ODE_SOLVERS.dopri853;
+      else if (classname.indexOf("richa")>=0)  _engine = EJSS_ODE_SOLVERS.eulerRichardson;
+      else if (classname.indexOf("euler")>=0)  _engine = EJSS_ODE_SOLVERS.euler;
+      else if (classname.indexOf("fehlberg87")>=0) _engine = EJSS_ODE_SOLVERS.fehlberg87;
+      else if (classname.indexOf("fehlberg8")>=0)  _engine = EJSS_ODE_SOLVERS.fehlberg8;
+      else if (classname.indexOf("radau")>=0)   _engine = EJSS_ODE_SOLVERS.radau5;
+      else if (classname.indexOf("runge")>=0)  _engine = EJSS_ODE_SOLVERS.rungeKutta4;
+      else if (classname.indexOf("rk4")>=0)    _engine = EJSS_ODE_SOLVERS.rungeKutta4;
+      else if (classname.indexOf("verlet")>=0) _engine = EJSS_ODE_SOLVERS.velocityVerlet;
+    }
+    if (_engine) ode.setSolverClass(_engine);
+  }
+
+  function _ODE_evolution1() {
+    var __odeSelf = {};
+    var __eventSolver;
+    var __solverClass = EJSS_ODE_SOLVERS.cashKarp45;
+    var __state=[];
+    var _ODE_evolution1_Event1;
+    var __ignoreErrors=false;
+    var __mustInitialize=true;
+    var __isEnabled=true;
+    var __mustUserReinitialize=false;
+    var __mustReinitialize=true;
+
+
+    __odeSelf._getOdeVars = function (){ return["x1","x2","t"]};
+
+    __odeSelf.setSolverClass = function(__aSolverClass) {
+      __solverClass = __aSolverClass;
+      __instantiateSolver();
+    };
+
+    function __instantiateSolver() {
+      __state=[];
+      __pushState();
+      __eventSolver = EJSS_ODE_SOLVERS.interpolatorEventSolver(__solverClass(),__odeSelf);
+      __mustInitialize = true;
+    }
+
+    __odeSelf.setEnabled = function(_enabled) { __isEnabled = _enabled; };
+
+    __odeSelf.getIndependentVariableValue = function() { return __eventSolver.getIndependentVariableValue(); };
+
+    __odeSelf.getInternalStepSize = function() { return __eventSolver.getInternalStepSize(); };
+
+    __odeSelf.isAccelerationIndependentOfVelocity = function() { return false; };
+
+    __odeSelf.initializeSolver = function() {
+      if (__arraysChanged()) { __instantiateSolver(); __odeSelf.initializeSolver(); return; }
+      __pushState();
+      __eventSolver.initialize(dt);
+      __eventSolver.setBestInterpolation(false);
+      __eventSolver.setMaximumInternalSteps(10000);
+      __eventSolver.removeAllEvents();
+      if (__pagesEnabled["Collision"]) __eventSolver.addEvent(_ODE_evolution1_Event1());
+      for(k in userEvents1){__eventSolver.addEvent(userEvents1[k]);}
+      __eventSolver.setEstimateFirstStep(false);
+      __eventSolver.setEnableExceptions(false);
+      __eventSolver.setTolerances(0.00001,0.00001);
+      __mustReinitialize = true;
+      __mustInitialize = false;
+    };
+
+    function __pushState() {
+      // Copy our variables to __state[] 
+        var __j=0;
+        var __n=0;
+        var __cIn=0;
+        if (__state[__cIn]!=x1) __mustReinitialize = true;
+        __state[__cIn++] = x1;
+        if (__state[__cIn]!=x2) __mustReinitialize = true;
+        __state[__cIn++] = x2;
+        if (__state[__cIn]!=t) __mustReinitialize = true;
+        __state[__cIn++] = t;
+    }
+
+    function __arraysChanged () {
+      return false;
+    }
+
+    __odeSelf.getEventSolver = function() {
+      return __eventSolver;
+    };
+
+    __odeSelf.resetSolver = function() {
+      __mustUserReinitialize = true;
+    };
+
+    __odeSelf.automaticResetSolver = function() {
+      __mustReinitialize = true;
+    };
+
+    function __errorAction () {
+      if (__ignoreErrors) return;
+      console.log (__eventSolver.getErrorMessage());
+      _pause();
+      // Make sure the solver is reinitialized;
+      __mustReinitialize = true;
+    }
+
+    __odeSelf.step = function() { return __privateStep(false); };
+
+    __odeSelf.solverStep = function() { return __privateStep(true); };
+
+    function __privateStep(__takeMaximumStep) {
+      if (!__isEnabled) return 0;
+      if (dt===0) return 0;
+      if (__mustInitialize) __odeSelf.initializeSolver();
+      if (__arraysChanged()) { __instantiateSolver(); __odeSelf.initializeSolver(); }
+      __eventSolver.setStepSize(dt);
+      __eventSolver.setInternalStepSize(dt);
+      __eventSolver.setMaximumInternalSteps(10000);
+      __eventSolver.setTolerances(0.00001,0.00001);
+      __pushState();
+      if (__mustUserReinitialize) { 
+        __eventSolver.userReinitialize();
+        __mustUserReinitialize = false;
+        __mustReinitialize = false;
+        if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      }
+      else if (__mustReinitialize) { 
+        __eventSolver.reinitialize();
+        __mustReinitialize = false;
+        if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      }
+      var __stepTaken = __takeMaximumStep ? __eventSolver.maxStep() : __eventSolver.step();
+      // Extract our variables from __state
+        var __i=0;
+        var __cOut=0;
+        x1 = __state[__cOut++];
+        x2 = __state[__cOut++];
+        t = __state[__cOut++];
+      // Check for error
+      if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      return __stepTaken;
+    }
+
+    __odeSelf.getState = function() { return __state; };
+
+    __odeSelf.getRate = function(_aState,_aRate) {
+      _aRate[_aRate.length-1] = 0.0; // In case the prelim code returns
+      var __index=-1; // so that it can be used in preliminary code
+      // Extract our variables from _aState
+        var __i=0;
+        var __cOut=0;
+        var x1 = _aState[__cOut++];
+        var x2 = _aState[__cOut++];
+        var t = _aState[__cOut++];
+      // Preliminary code: Code to be executed before rate equations are evaluated
+        // May be problematic to put this here as it runs at every time step  // > Preliminary code for ODE.Evol Page:1
+        // Put in Initialization instead  // > Preliminary code for ODE.Evol Page:2
+          // > Preliminary code for ODE.Evol Page:3
+        //if (quizmode) {  // > Preliminary code for ODE.Evol Page:4
+        //  setup(stage);  // > Preliminary code for ODE.Evol Page:5
+        //}  // > Preliminary code for ODE.Evol Page:6
+      // Compute the rate
+        var __cRate=0;
+        _aRate[__cRate++] = v1; // Rate for ODE: Evol Page:x1
+        _aRate[__cRate++] = v2; // Rate for ODE: Evol Page:x2
+        _aRate[__cRate++] = 1; // independent variable
+        return _aRate;
+    }; //end of getRate
+
+    __odeSelf._addEvent = function(userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent){
+    var User_Event = function (userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent) {
+      var _eventSelf = {};
+
+      _eventSelf.getTypeOfEvent = function() { return eventType; };
+
+      _eventSelf.getRootFindingMethod = function() { return eventMethod; };
+
+      _eventSelf.getMaxIterations = function() { return maxIter; };
+
+      _eventSelf.getTolerance = function() { return eventTolerance; };
+
+      _eventSelf.evaluate = function(_aState) { 
+      // Extract our variables from _aState
+        var __i=0;
+        var __cOut=0;
+        var x1 = _aState[__cOut++];
+        var x2 = _aState[__cOut++];
+        var t = _aState[__cOut++];
+      return eval(userCondition);
+      };
+
+      _eventSelf.action = function() { 
+      // Extract our variables from __state
+        var __i=0;
+        var __cOut=0;
+        x1 = __state[__cOut++];
+        x2 = __state[__cOut++];
+        t = __state[__cOut++];
+        var _returnValue = __userDefinedAction();
+      // Copy our variables to __state[] 
+        var __j=0;
+        var __n=0;
+        var __cIn=0;
+        __state[__cIn++] = x1;
+        __state[__cIn++] = x2;
+        __state[__cIn++] = t;
+        return _returnValue;
+      };
+
+      function __userDefinedAction() {
+        if (undefined != functions) eval(functions.toString());
+        eval(userAction);
+        return endAtEvent;
+      }
+
+      return _eventSelf;
+    }; // End of event
+
+   userEvents1.push(User_Event(userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent));
+   }
+
+    _ODE_evolution1_Event1 = function() {
+      var _eventSelf = {};
+
+      _eventSelf.getTypeOfEvent = function() { return EJSS_ODE_SOLVERS.EVENT_TYPE.CROSSING_EVENT; };
+
+      _eventSelf.getRootFindingMethod = function() { return EJSS_ODE_SOLVERS.EVENT_METHOD.BISECTION; };
+
+      _eventSelf.getMaxIterations = function() { return 100; };
+
+      _eventSelf.getTolerance = function() { return 1.0e-5; };
+
+      _eventSelf.evaluate = function(_aState) { 
+      // Extract our variables from _aState
+        var __i=0;
+        var __cOut=0;
+        var x1 = _aState[__cOut++];
+        var x2 = _aState[__cOut++];
+        var t = _aState[__cOut++];
+        return x1-x2;  // > Event zero-condition for page Evol Page:1
+      };
+
+      _eventSelf.action = function() { 
+      // Extract our variables from __state
+        var __i=0;
+        var __cOut=0;
+        x1 = __state[__cOut++];
+        x2 = __state[__cOut++];
+        t = __state[__cOut++];
+        var _returnValue = __userDefinedAction();
+      // Copy our variables to __state[] 
+        var __j=0;
+        var __n=0;
+        var __cIn=0;
+        __state[__cIn++] = x1;
+        __state[__cIn++] = x2;
+        __state[__cIn++] = t;
+        return _returnValue;
+      };
+
+      function __userDefinedAction() {
+        // calculate new velocities  // > Event action for page Evol Page:1
+        new_v1=(m1*v1+m2*v2+m2*Cres*(v2-v1))/(m1+m2);  // > Event action for page Evol Page:2
+        new_v2=(m1*v1+m2*v2+m1*Cres*(v1-v2))/(m1+m2);  // > Event action for page Evol Page:3
+          // > Event action for page Evol Page:4
+        // mark quiz if needed  // > Event action for page Evol Page:5
+        if (quizmode) {  // > Event action for page Evol Page:6
+          if (v1 == v1answer && new_v2 == v2target) {  // > Event action for page Evol Page:7
+            solved = true;  // > Event action for page Evol Page:8
+            stage += 1;  // > Event action for page Evol Page:9
+          }  // > Event action for page Evol Page:10
+        }  // > Event action for page Evol Page:11
+          // > Event action for page Evol Page:12
+        // update velocities  // > Event action for page Evol Page:13
+        v1=new_v1;  // > Event action for page Evol Page:14
+        v2=new_v2;  // > Event action for page Evol Page:15
+          // > Event action for page Evol Page:16
+        // switch stage  // > Event action for page Evol Page:17
+        if (quizmode && stage > 7) {  // > Event action for page Evol Page:18
+          _pause();  // > Event action for page Evol Page:19
+          alert("Congratulations! You have cleared the final stage.");  // > Event action for page Evol Page:20
+          stage = 0;  // > Event action for page Evol Page:21
+          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:22
+          quizmode = false;  // > Event action for page Evol Page:23
+        } else if (quizmode && solved) {  // > Event action for page Evol Page:24
+          _pause();  // > Event action for page Evol Page:25
+          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:26
+          //_view.comboBoxStage.getSelectedOptions().setValue("stage="+_view._format(stage,"0"));  // > Event action for page Evol Page:27
+          setup(stage);  // > Event action for page Evol Page:28
+        } else {  // > Event action for page Evol Page:29
+          // do nothing  // > Event action for page Evol Page:30
+        }  // > Event action for page Evol Page:31
+        return true;
+      }
+
+      return _eventSelf;
+    }; // End of event
+
+    __instantiateSolver();
+
+    return __odeSelf;
+  }
+
+  function _historic_x1(__time) {
+    var __index = 0;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+  function _historic_x2(__time) {
+    var __index = 0 + 1;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+    _model._fontResized = function(iBase,iSize,iDelta) {
+      _view._fontResized(iBase,iSize,iDelta);
+  }; // end of _fontResized
+
+  function _getViews() {
+    var _viewsInfo = [];
+    var _counter = 0;
+    _viewsInfo[_counter++] = { name : "HtmlView Page", width : null, height : null };
+    return _viewsInfo;
+  } // end of _getViews
+
+  function _selectView(_viewNumber) {
+    _view = null;
+    _view = new Collisions1D_View(_topFrame,_viewNumber,_libraryPath,_codebasePath);
+    var _view_super_reset = _view._reset;
+    _view._reset = function() {
+      _view_super_reset();
+      switch(_viewNumber) {
+        case -10 : break; // make Lint happy
+        default :
+        case 0:
+          _view.slider_m1.linkProperty("Value",  function() { return m1; }, function(_v) { m1 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_m1'
+          _view.slider_m1.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_m1'
+          _view.slider_m1.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m1'
+          _view.slider_m2.linkProperty("Value",  function() { return m2; }, function(_v) { m2 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_m2'
+          _view.slider_m2.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_m2'
+          _view.slider_m2.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m2'
+          _view.slider_COR.linkProperty("Value",  function() { return Cres; }, function(_v) { Cres = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_COR'
+          _view.slider_COR.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_COR'
+          _view.slider_COR.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_COR'
+          _view.slider_v1.linkProperty("Background",  function() { return bg_slider; }, function(_v) { bg_slider = _v; } ); // HtmlView Page linking property 'Background' for element 'slider_v1'
+          _view.slider_v1.linkProperty("Value",  function() { return v1; }, function(_v) { v1 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_v1'
+          _view.slider_v1.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_v1'
+          _view.slider_v1.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_v1'
+          _view.slider_v2.linkProperty("Value",  function() { return v2; }, function(_v) { v2 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_v2'
+          _view.slider_v2.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_v2'
+          _view.slider_v2.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_v2'
+          _view.field_v2target.linkProperty("Value",  function() { return v2target; }, function(_v) { v2target = _v; } ); // HtmlView Page linking property 'Value' for element 'field_v2target'
+          _view.field_v2target.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'field_v2target'
+          _view.labelTarget.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'labelTarget'
+          _view.playPauseButton.setAction("OffClick", _pause); // HtmlView Page setting action 'OffClick' for element 'playPauseButton'
+          _view.playPauseButton.linkProperty("State",  function() { return _isPaused; } ); // HtmlView Page linking property 'State' for element 'playPauseButton'
+          _view.playPauseButton.setAction("OnClick", _play); // HtmlView Page setting action 'OnClick' for element 'playPauseButton'
+          _view.stepButton.setAction("OnClick", _step); // HtmlView Page setting action 'OnClick' for element 'stepButton'
+          _view.initButton.setAction("OnClick", _initialize); // HtmlView Page setting action 'OnClick' for element 'initButton'
+          _view.resetButton.setAction("OnClick", _reset); // HtmlView Page setting action 'OnClick' for element 'resetButton'
+          _view.checkBoxQuiz.linkProperty("Checked",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Checked' for element 'checkBoxQuiz'
+          _view.checkBoxQuiz.setAction("OnCheckOff", _initialize); // HtmlView Page setting action 'OnCheckOff' for element 'checkBoxQuiz'
+          _view.checkBoxQuiz.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'checkBoxQuiz'
+          _view.checkBoxQuiz.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'checkBoxQuiz'
+          _view.checkBoxQuiz.setAction("OnCheckOn", _initialize); // HtmlView Page setting action 'OnCheckOn' for element 'checkBoxQuiz'
+          _view.comboBoxStage.linkProperty("Options",  function() { return ["stage=0", "stage=1", "stage=2", "stage=3", "stage=4", "stage=5", "stage=6", "stage=7"]; } ); // HtmlView Page linking property 'Options' for element 'comboBoxStage'
+          _view.comboBoxStage.setAction("OnChange", stage_Switcher); // HtmlView Page setting action 'OnChange' for element 'comboBoxStage'
+          _view.comboBoxStage.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'comboBoxStage'
+          _view.comboBoxStage.linkProperty("SelectedOptions",  function() { return selected; }, function(_v) { selected = _v; } ); // HtmlView Page linking property 'SelectedOptions' for element 'comboBoxStage'
+          _view.drawingPanel.linkProperty("TRMessage",  function() { return "time="+_view._format(t,"0.00"); } ); // HtmlView Page linking property 'TRMessage' for element 'drawingPanel'
+          _view.drawingPanel.linkProperty("BLMessage",  function() { return displaystage; }, function(_v) { displaystage = _v; } ); // HtmlView Page linking property 'BLMessage' for element 'drawingPanel'
+          _view.shape_m1.linkProperty("SizeX",  function() { return viz_mass*Math.sqrt(m1); } ); // HtmlView Page linking property 'SizeX' for element 'shape_m1'
+          _view.shape_m1.linkProperty("X",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'X' for element 'shape_m1'
+          _view.shape_m1.linkProperty("SizeY",  function() { return viz_mass*Math.sqrt(m1); } ); // HtmlView Page linking property 'SizeY' for element 'shape_m1'
+          _view.arrow_v1.linkProperty("SizeX",  function() { return viz_vel*v1; } ); // HtmlView Page linking property 'SizeX' for element 'arrow_v1'
+          _view.arrow_v1.linkProperty("X",  function() { return x1-0.5*viz_vel*v1; } ); // HtmlView Page linking property 'X' for element 'arrow_v1'
+          _view.text_m1.linkProperty("X",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'X' for element 'text_m1'
+          _view.text_v1_null.linkProperty("X",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'X' for element 'text_v1_null'
+          _view.text_v1_null.linkProperty("Visibility",  function() { return v1==0; } ); // HtmlView Page linking property 'Visibility' for element 'text_v1_null'
+          _view.text_v1.linkProperty("X",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'X' for element 'text_v1'
+          _view.shape_m2.linkProperty("SizeX",  function() { return viz_mass*Math.sqrt(m2); } ); // HtmlView Page linking property 'SizeX' for element 'shape_m2'
+          _view.shape_m2.linkProperty("X",  function() { return x2; }, function(_v) { x2 = _v; } ); // HtmlView Page linking property 'X' for element 'shape_m2'
+          _view.shape_m2.linkProperty("SizeY",  function() { return viz_mass*Math.sqrt(m2); } ); // HtmlView Page linking property 'SizeY' for element 'shape_m2'
+          _view.arrow_v2.linkProperty("SizeX",  function() { return viz_vel*v2; } ); // HtmlView Page linking property 'SizeX' for element 'arrow_v2'
+          _view.arrow_v2.linkProperty("X",  function() { return x2-0.5*viz_vel*v2; } ); // HtmlView Page linking property 'X' for element 'arrow_v2'
+          _view.text_m2.linkProperty("X",  function() { return x2; }, function(_v) { x2 = _v; } ); // HtmlView Page linking property 'X' for element 'text_m2'
+          _view.text_v2_null.linkProperty("X",  function() { return x2; }, function(_v) { x2 = _v; } ); // HtmlView Page linking property 'X' for element 'text_v2_null'
+          _view.text_v2_null.linkProperty("Visibility",  function() { return v2==0; } ); // HtmlView Page linking property 'Visibility' for element 'text_v2_null'
+          _view.text_v2.linkProperty("X",  function() { return x2; }, function(_v) { x2 = _v; } ); // HtmlView Page linking property 'X' for element 'text_v2'
+          _view.textElasticity.linkProperty("Text",  function() { return txtElasticity; }, function(_v) { txtElasticity = _v; } ); // HtmlView Page linking property 'Text' for element 'textElasticity'
+          _view.textElasticity.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'textElasticity'
+          _view.trailZero.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'trailZero'
+          _view.x1.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'x1'
+          _view.x1.linkProperty("InputY",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'InputY' for element 'x1'
+          _view.x2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'x2'
+          _view.x2.linkProperty("InputY",  function() { return x2; }, function(_v) { x2 = _v; } ); // HtmlView Page linking property 'InputY' for element 'x2'
+          _view.trailZero2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'trailZero2'
+          _view.v1.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'v1'
+          _view.v1.linkProperty("InputY",  function() { return v1; }, function(_v) { v1 = _v; } ); // HtmlView Page linking property 'InputY' for element 'v1'
+          _view.v2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'v2'
+          _view.v2.linkProperty("InputY",  function() { return v2; }, function(_v) { v2 = _v; } ); // HtmlView Page linking property 'InputY' for element 'v2'
+          _view.trailZero3.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'trailZero3'
+          _view.Ptot.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'Ptot'
+          _view.Ptot.linkProperty("InputY",  function() { return P1+P2; } ); // HtmlView Page linking property 'InputY' for element 'Ptot'
+          _view.P1.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'P1'
+          _view.P1.linkProperty("InputY",  function() { return P1; }, function(_v) { P1 = _v; } ); // HtmlView Page linking property 'InputY' for element 'P1'
+          _view.P2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'P2'
+          _view.P2.linkProperty("InputY",  function() { return P2; }, function(_v) { P2 = _v; } ); // HtmlView Page linking property 'InputY' for element 'P2'
+          _view.trailZero4.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'trailZero4'
+          _view.E.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'E'
+          _view.E.linkProperty("InputY",  function() { return E; }, function(_v) { E = _v; } ); // HtmlView Page linking property 'InputY' for element 'E'
+          _view.T1.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'T1'
+          _view.T1.linkProperty("InputY",  function() { return T1; }, function(_v) { T1 = _v; } ); // HtmlView Page linking property 'InputY' for element 'T1'
+          _view.T2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // HtmlView Page linking property 'InputX' for element 'T2'
+          _view.T2.linkProperty("InputY",  function() { return T2; }, function(_v) { T2 = _v; } ); // HtmlView Page linking property 'InputY' for element 'T2'
+          break;
+      } // end of switch
+    }; // end of new reset
+
+    _model.setView(_view);
+    _model.reset();
+    _view._enableEPub();
+  } // end of _selectView
+
+  _model.setAutoplay(false);
+  _model.setFPS(20);
+  _model.setStepsPerDisplay(1);
+  _selectView(_model._autoSelectView(_getViews())); // this includes _model.reset()
+  return _model;
+}
+
+function Collisions1D_View (_topFrame,_viewNumber,_libraryPath,_codebasePath) {
+  var _view;
+  switch(_viewNumber) {
+    case -10 : break; // make Lint happy
+    default :
+    case 0: _view = Collisions1D_View_0 (_topFrame); break;
+  } // end of switch
+
+  if (_codebasePath) _view._setResourcePath(_codebasePath);
+
+  if (_libraryPath) _view._setLibraryPath(_libraryPath);
+
+  _view._addDescriptionPage('Introduction','./Collisions1D_Intro_1.html');
+  _view._addDescriptionPage('Activities','./Collisions1D_Intro_2.html');
+
+  return _view;
+} // end of main function
+
+function Collisions1D_View_0 (_topFrame) {
+  var _view = EJSS_CORE.createView(_topFrame);
+
+  _view._reset = function() {
+    _view._clearAll();
+    _view._addElement(EJSS_INTERFACE.panel,"nPanelsPanel", _view._topFrame) // EJsS HtmlView.HtmlView Page: declaration of element 'nPanelsPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"labelTitle", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'labelTitle'
+      .setProperty("Foreground","Blue") // EJsS HtmlView.HtmlView Page: setting property 'Foreground' for element 'labelTitle'
+      .setProperty("Text","1D Collisions") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'labelTitle'
+      .setProperty("Font","normal bold 30px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'labelTitle'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"labelPanel", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'labelPanel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'labelPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"label_m1", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'label_m1'
+      .setProperty("Text","m1 =") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'label_m1'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.slider,"slider_m1", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'slider_m1'
+      .setProperty("Width",100) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'slider_m1'
+      .setProperty("Minimum",1) // EJsS HtmlView.HtmlView Page: setting property 'Minimum' for element 'slider_m1'
+      .setProperty("Maximum",5) // EJsS HtmlView.HtmlView Page: setting property 'Maximum' for element 'slider_m1'
+      .setProperty("ShowText",true) // EJsS HtmlView.HtmlView Page: setting property 'ShowText' for element 'slider_m1'
+      .setProperty("Format","0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'slider_m1'
+      .setProperty("Step",1) // EJsS HtmlView.HtmlView Page: setting property 'Step' for element 'slider_m1'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"label_m2", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'label_m2'
+      .setProperty("Text","m2 =") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'label_m2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.slider,"slider_m2", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'slider_m2'
+      .setProperty("Width",100) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'slider_m2'
+      .setProperty("Minimum",1) // EJsS HtmlView.HtmlView Page: setting property 'Minimum' for element 'slider_m2'
+      .setProperty("Maximum",5) // EJsS HtmlView.HtmlView Page: setting property 'Maximum' for element 'slider_m2'
+      .setProperty("ShowText",true) // EJsS HtmlView.HtmlView Page: setting property 'ShowText' for element 'slider_m2'
+      .setProperty("Format","0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'slider_m2'
+      .setProperty("Step",1) // EJsS HtmlView.HtmlView Page: setting property 'Step' for element 'slider_m2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"label_COR", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'label_COR'
+      .setProperty("Text","COR =") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'label_COR'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.slider,"slider_COR", _view.labelPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'slider_COR'
+      .setProperty("Width",150) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'slider_COR'
+      .setProperty("Minimum",0) // EJsS HtmlView.HtmlView Page: setting property 'Minimum' for element 'slider_COR'
+      .setProperty("Maximum",1) // EJsS HtmlView.HtmlView Page: setting property 'Maximum' for element 'slider_COR'
+      .setProperty("ShowText",true) // EJsS HtmlView.HtmlView Page: setting property 'ShowText' for element 'slider_COR'
+      .setProperty("Format","0.0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'slider_COR'
+      .setProperty("Step",0.1) // EJsS HtmlView.HtmlView Page: setting property 'Step' for element 'slider_COR'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"labelPanelVel", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'labelPanelVel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'labelPanelVel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"label_v1", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'label_v1'
+      .setProperty("Text","v1 =") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'label_v1'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.slider,"slider_v1", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'slider_v1'
+      .setProperty("Width",250) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'slider_v1'
+      .setProperty("Minimum",0.1) // EJsS HtmlView.HtmlView Page: setting property 'Minimum' for element 'slider_v1'
+      .setProperty("Maximum",5) // EJsS HtmlView.HtmlView Page: setting property 'Maximum' for element 'slider_v1'
+      .setProperty("ShowText",true) // EJsS HtmlView.HtmlView Page: setting property 'ShowText' for element 'slider_v1'
+      .setProperty("Format","0.0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'slider_v1'
+      .setProperty("Step",0.1) // EJsS HtmlView.HtmlView Page: setting property 'Step' for element 'slider_v1'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"label_v2", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'label_v2'
+      .setProperty("Text","v2 =") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'label_v2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.slider,"slider_v2", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'slider_v2'
+      .setProperty("Width",200) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'slider_v2'
+      .setProperty("Minimum",-3) // EJsS HtmlView.HtmlView Page: setting property 'Minimum' for element 'slider_v2'
+      .setProperty("Maximum",3) // EJsS HtmlView.HtmlView Page: setting property 'Maximum' for element 'slider_v2'
+      .setProperty("ShowText",true) // EJsS HtmlView.HtmlView Page: setting property 'ShowText' for element 'slider_v2'
+      .setProperty("Format","0.0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'slider_v2'
+      .setProperty("Step",0.1) // EJsS HtmlView.HtmlView Page: setting property 'Step' for element 'slider_v2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.numberField,"field_v2target", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'field_v2target'
+      .setProperty("Width","40px") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'field_v2target'
+      .setProperty("Format","0.0") // EJsS HtmlView.HtmlView Page: setting property 'Format' for element 'field_v2target'
+      .setProperty("Editable",false) // EJsS HtmlView.HtmlView Page: setting property 'Editable' for element 'field_v2target'
+      .setProperty("Font","normal bold 14px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'field_v2target'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"labelTarget", _view.labelPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'labelTarget'
+      .setProperty("Text","(target v2)") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'labelTarget'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"controlPanel", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'controlPanel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'controlPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"executionPanel", _view.controlPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'executionPanel'
+      .setProperty("Width",200) // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'executionPanel'
+      .setProperty("Display","inline-block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'executionPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.twoStateButton,"playPauseButton", _view.executionPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'playPauseButton'
+      .setProperty("Tooltip","Play/Pause") // EJsS HtmlView.HtmlView Page: setting property 'Tooltip' for element 'playPauseButton'
+      .setProperty("ImageOnUrl","/data/icons/osp/play.gif") // EJsS HtmlView.HtmlView Page: setting property 'ImageOnUrl' for element 'playPauseButton'
+      .setProperty("ImageOffUrl","/data/icons/osp/pause.gif") // EJsS HtmlView.HtmlView Page: setting property 'ImageOffUrl' for element 'playPauseButton'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"stepButton", _view.executionPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'stepButton'
+      .setProperty("ImageUrl","/data/icons/osp/stepforward.gif") // EJsS HtmlView.HtmlView Page: setting property 'ImageUrl' for element 'stepButton'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"initButton", _view.executionPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'initButton'
+      .setProperty("Tooltip","Initialize") // EJsS HtmlView.HtmlView Page: setting property 'Tooltip' for element 'initButton'
+      .setProperty("ImageUrl","/data/icons/osp/reset1.gif") // EJsS HtmlView.HtmlView Page: setting property 'ImageUrl' for element 'initButton'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"resetButton", _view.executionPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'resetButton'
+      .setProperty("ImageUrl","/data/icons/osp/reset.gif") // EJsS HtmlView.HtmlView Page: setting property 'ImageUrl' for element 'resetButton'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"quizPanel", _view.controlPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'quizPanel'
+      .setProperty("Display","inline-block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'quizPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.checkBox,"checkBoxQuiz", _view.quizPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'checkBoxQuiz'
+      .setProperty("Background","rgba(200,220,208,1)") // EJsS HtmlView.HtmlView Page: setting property 'Background' for element 'checkBoxQuiz'
+      .setProperty("Text","Quiz Mode?") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'checkBoxQuiz'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.comboBox,"comboBoxStage", _view.quizPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'comboBoxStage'
+      .setProperty("Multiple",false) // EJsS HtmlView.HtmlView Page: setting property 'Multiple' for element 'comboBoxStage'
+      .setProperty("Disabled",false) // EJsS HtmlView.HtmlView Page: setting property 'Disabled' for element 'comboBoxStage'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"mainPanel", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'mainPanel'
+      .setProperty("Width","80%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'mainPanel'
+      .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'mainPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"subPanel1", _view.mainPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'subPanel1'
+      .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'subPanel1'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'subPanel1'
+      .setProperty("CSS",{"display":"inline-block",    "margin":"2px",    "vertical-align": "top"}) // EJsS HtmlView.HtmlView Page: setting property 'CSS' for element 'subPanel1'
+      .setProperty("Background","Blue") // EJsS HtmlView.HtmlView Page: setting property 'Background' for element 'subPanel1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.drawingPanel,"drawingPanel", _view.subPanel1) // EJsS HtmlView.HtmlView Page: declaration of element 'drawingPanel'
+      .setProperty("Height","100%") // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'drawingPanel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'drawingPanel'
+      .setProperty("MinimumX",-3) // EJsS HtmlView.HtmlView Page: setting property 'MinimumX' for element 'drawingPanel'
+      .setProperty("SquareAspect",true) // EJsS HtmlView.HtmlView Page: setting property 'SquareAspect' for element 'drawingPanel'
+      .setProperty("MaximumX",3) // EJsS HtmlView.HtmlView Page: setting property 'MaximumX' for element 'drawingPanel'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"shape_m1", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'shape_m1'
+      .setProperty("FillColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'shape_m1'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.HtmlView Page: setting property 'ShapeType' for element 'shape_m1'
+      .setProperty("Y",0) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'shape_m1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.arrow,"arrow_v1", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'arrow_v1'
+      .setProperty("LineColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'arrow_v1'
+      .setProperty("Y",0.3) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'arrow_v1'
+      .setProperty("Visibility",true) // EJsS HtmlView.HtmlView Page: setting property 'Visibility' for element 'arrow_v1'
+      .setProperty("SizeY",0) // EJsS HtmlView.HtmlView Page: setting property 'SizeY' for element 'arrow_v1'
+      .setProperty("LineWidth",3) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'arrow_v1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_m1", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_m1'
+      .setProperty("Y",-0.3) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_m1'
+      .setProperty("Text","m1") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_m1'
+      .setProperty("Font","normal normal 14px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_m1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_v1_null", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_v1_null'
+      .setProperty("FillColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'text_v1_null'
+      .setProperty("Y",0.3) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_v1_null'
+      .setProperty("Text","x") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_v1_null'
+      .setProperty("Font","normal bold 12px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_v1_null'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_v1", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_v1'
+      .setProperty("FillColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'text_v1'
+      .setProperty("Y",0.5) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_v1'
+      .setProperty("Text","v1") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_v1'
+      .setProperty("Font","normal bold 12px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_v1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"shape_m2", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'shape_m2'
+      .setProperty("FillColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'shape_m2'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.HtmlView Page: setting property 'ShapeType' for element 'shape_m2'
+      .setProperty("Y",0) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'shape_m2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.arrow,"arrow_v2", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'arrow_v2'
+      .setProperty("LineColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'arrow_v2'
+      .setProperty("Y",0.4) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'arrow_v2'
+      .setProperty("Visibility",true) // EJsS HtmlView.HtmlView Page: setting property 'Visibility' for element 'arrow_v2'
+      .setProperty("SizeY",0) // EJsS HtmlView.HtmlView Page: setting property 'SizeY' for element 'arrow_v2'
+      .setProperty("LineWidth",3) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'arrow_v2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_m2", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_m2'
+      .setProperty("Y",-0.2) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_m2'
+      .setProperty("Text","m2") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_m2'
+      .setProperty("Font","normal normal 14px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_m2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_v2_null", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_v2_null'
+      .setProperty("FillColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'text_v2_null'
+      .setProperty("Y",0.4) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_v2_null'
+      .setProperty("Text","x") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_v2_null'
+      .setProperty("Font","normal bold 12px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_v2_null'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"text_v2", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'text_v2'
+      .setProperty("FillColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'text_v2'
+      .setProperty("Y",0.6) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'text_v2'
+      .setProperty("Text","v2") // EJsS HtmlView.HtmlView Page: setting property 'Text' for element 'text_v2'
+      .setProperty("Font","normal bold 12px ") // EJsS HtmlView.HtmlView Page: setting property 'Font' for element 'text_v2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.text,"textElasticity", _view.drawingPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'textElasticity'
+      .setProperty("FillColor","DarkGray") // EJsS HtmlView.HtmlView Page: setting property 'FillColor' for element 'textElasticity'
+      .setProperty("X",0) // EJsS HtmlView.HtmlView Page: setting property 'X' for element 'textElasticity'
+      .setProperty("Y",-0.7) // EJsS HtmlView.HtmlView Page: setting property 'Y' for element 'textElasticity'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"graphPanel", _view.nPanelsPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'graphPanel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'graphPanel'
+      .setProperty("CSS",{"display":"block",  "margin-left":"0cm",  "margin-right":"0cm",  "margin-top":"0cm",  "margin-bottom":"0cm"}) // EJsS HtmlView.HtmlView Page: setting property 'CSS' for element 'graphPanel'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"subPanelLeft", _view.graphPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'subPanelLeft'
+      .setProperty("Width","45%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'subPanelLeft'
+      .setProperty("CSS",{"display":"inline-block",    "margin":"2px",   "vertical-align":"top"}) // EJsS HtmlView.HtmlView Page: setting property 'CSS' for element 'subPanelLeft'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelPos", _view.subPanelLeft) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelPos'
+      .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelPos'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelPos'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelPos'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelPos'
+      .setProperty("TitleY","position") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelPos'
+      .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelPos'
+      .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelPos'
+      .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelPos'
+      .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelPos'
+      .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'plottingPanelPos'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"trailZero", _view.plottingPanelPos) // EJsS HtmlView.HtmlView Page: declaration of element 'trailZero'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'trailZero'
+      .setProperty("Attributes",{ "stroke-dasharray":"8 8 8 8" }) // EJsS HtmlView.HtmlView Page: setting property 'Attributes' for element 'trailZero'
+      .setProperty("InputY",0) // EJsS HtmlView.HtmlView Page: setting property 'InputY' for element 'trailZero'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'trailZero'
+      .setProperty("LineWidth",1) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'trailZero'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"x1", _view.plottingPanelPos) // EJsS HtmlView.HtmlView Page: declaration of element 'x1'
+      .setProperty("LineColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'x1'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'x1'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'x1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"x2", _view.plottingPanelPos) // EJsS HtmlView.HtmlView Page: declaration of element 'x2'
+      .setProperty("LineColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'x2'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'x2'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'x2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelVel", _view.subPanelLeft) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelVel'
+      .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelVel'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelVel'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelVel'
+      .setProperty("TitleY","velocity") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelVel'
+      .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelVel'
+      .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelVel'
+      .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelVel'
+      .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelVel'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelVel'
+      .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'plottingPanelVel'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"trailZero2", _view.plottingPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'trailZero2'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'trailZero2'
+      .setProperty("Attributes",{ "stroke-dasharray":"8 8 8 8" }) // EJsS HtmlView.HtmlView Page: setting property 'Attributes' for element 'trailZero2'
+      .setProperty("InputY",0) // EJsS HtmlView.HtmlView Page: setting property 'InputY' for element 'trailZero2'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'trailZero2'
+      .setProperty("LineWidth",1) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'trailZero2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"v1", _view.plottingPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'v1'
+      .setProperty("LineColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'v1'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'v1'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'v1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"v2", _view.plottingPanelVel) // EJsS HtmlView.HtmlView Page: declaration of element 'v2'
+      .setProperty("LineColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'v2'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'v2'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'v2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"subPanelRight", _view.graphPanel) // EJsS HtmlView.HtmlView Page: declaration of element 'subPanelRight'
+      .setProperty("Width","45%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'subPanelRight'
+      .setProperty("CSS",{"display":"inline-block",    "margin":"2px",   "vertical-align":"top"}) // EJsS HtmlView.HtmlView Page: setting property 'CSS' for element 'subPanelRight'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelMom", _view.subPanelRight) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelMom'
+      .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelMom'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelMom'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelMom'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelMom'
+      .setProperty("TRMessage","black: total") // EJsS HtmlView.HtmlView Page: setting property 'TRMessage' for element 'plottingPanelMom'
+      .setProperty("TitleY","momentum") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelMom'
+      .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelMom'
+      .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelMom'
+      .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelMom'
+      .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelMom'
+      .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'plottingPanelMom'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"trailZero3", _view.plottingPanelMom) // EJsS HtmlView.HtmlView Page: declaration of element 'trailZero3'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'trailZero3'
+      .setProperty("Attributes",{ "stroke-dasharray":"8 8 8 8" }) // EJsS HtmlView.HtmlView Page: setting property 'Attributes' for element 'trailZero3'
+      .setProperty("InputY",0) // EJsS HtmlView.HtmlView Page: setting property 'InputY' for element 'trailZero3'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'trailZero3'
+      .setProperty("LineWidth",1) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'trailZero3'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"Ptot", _view.plottingPanelMom) // EJsS HtmlView.HtmlView Page: declaration of element 'Ptot'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'Ptot'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'Ptot'
+      .setProperty("LineWidth",4) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'Ptot'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"P1", _view.plottingPanelMom) // EJsS HtmlView.HtmlView Page: declaration of element 'P1'
+      .setProperty("LineColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'P1'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'P1'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'P1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"P2", _view.plottingPanelMom) // EJsS HtmlView.HtmlView Page: declaration of element 'P2'
+      .setProperty("LineColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'P2'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'P2'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'P2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelErg", _view.subPanelRight) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelErg'
+      .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelErg'
+      .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelErg'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelErg'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelErg'
+      .setProperty("TRMessage","black: total") // EJsS HtmlView.HtmlView Page: setting property 'TRMessage' for element 'plottingPanelErg'
+      .setProperty("TitleY","energy") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelErg'
+      .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelErg'
+      .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelErg'
+      .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelErg'
+      .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelErg'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"trailZero4", _view.plottingPanelErg) // EJsS HtmlView.HtmlView Page: declaration of element 'trailZero4'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'trailZero4'
+      .setProperty("Attributes",{ "stroke-dasharray":"8 8 8 8" }) // EJsS HtmlView.HtmlView Page: setting property 'Attributes' for element 'trailZero4'
+      .setProperty("InputY",0) // EJsS HtmlView.HtmlView Page: setting property 'InputY' for element 'trailZero4'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'trailZero4'
+      .setProperty("LineWidth",1) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'trailZero4'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"E", _view.plottingPanelErg) // EJsS HtmlView.HtmlView Page: declaration of element 'E'
+      .setProperty("LineColor","Black") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'E'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'E'
+      .setProperty("LineWidth",4) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'E'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"T1", _view.plottingPanelErg) // EJsS HtmlView.HtmlView Page: declaration of element 'T1'
+      .setProperty("LineColor","Blue") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'T1'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'T1'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'T1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"T2", _view.plottingPanelErg) // EJsS HtmlView.HtmlView Page: declaration of element 'T2'
+      .setProperty("LineColor","Red") // EJsS HtmlView.HtmlView Page: setting property 'LineColor' for element 'T2'
+      .setProperty("NoRepeat",true) // EJsS HtmlView.HtmlView Page: setting property 'NoRepeat' for element 'T2'
+      .setProperty("LineWidth",2) // EJsS HtmlView.HtmlView Page: setting property 'LineWidth' for element 'T2'
+      ;
+
+  };
+
+  return _view;
+}
+
+
+//--><!]]></script>
+  </head>
+  <body>
+    <div role="button" id="_topFrame" style="text-align:center"></div>
+  <div id="metadata" class="metadata">
+    <br />
+    <div id="title_author">
+      <hr />
+      <b>Title and author:</b>
+      <p>
+      1D Collisions<br />
+     <img alt="Logo" src="1Dcollisions-thumbnail(small).png" />
+      </p>
+      <p>
+      <img alt="author image" src="ScienceSamuraiDarrenTanSquareSmall.png" />
+ Zhiming Darren TAN
+      </p>
+    </div>
+    <hr />
+    <p></p>
+    <div id="copyright_message">
+      <div class="cc_left"  style="float:left">&#169; 2022, Open Source Physics. Compiled with EJS 6.1 BETA (201115)
+</div>
+      <div class="cc_right" style="float:right">    Released under a <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US"> <img alt="Creative Commons Attribution-NonCommercial-ShareAlike" src="_ejs_library/images/cc_icon.png" /> </a> license.</div>
+    </div>
+  </div>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+      var _model;
+      var _scorm;
+      window.addEventListener('load',
+        function () { 
+          _model =  new Collisions1D("_topFrame","_ejs_library/",null);
+          if (typeof _isApp !== "undefined" && _isApp) _model.setRunAlways(true);
+          TextResizeDetector.TARGET_ELEMENT_ID = '_topFrame';
+          TextResizeDetector.USER_INIT_FUNC = function () {
+            var iBase = TextResizeDetector.addEventListener(function(e,args) {
+              _model._fontResized(args[0].iBase,args[0].iSize,args[0].iDelta);
+              },null);
+            _model._fontResized(iBase);
+          };
+          _model.onload();
+        }, false);
+    //--><!]]></script>
+  </body>
+</html>
