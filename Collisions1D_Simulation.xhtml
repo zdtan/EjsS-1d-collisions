@@ -84,6 +84,12 @@ var _stringProperties = {};
   var v2target; // EjsS Model.Variables.Quiz Vars.v2target
   var v1answer; // EjsS Model.Variables.Quiz Vars.v1answer
   var txtElasticity; // EjsS Model.Variables.Quiz Vars.txtElasticity
+  var firstTry; // EjsS Model.Variables.Quiz Vars.firstTry
+  var txtGoal; // EjsS Model.Variables.Quiz Vars.txtGoal
+  var TLmsg; // EjsS Model.Variables.Quiz Vars.TLmsg
+  var BLmsg; // EjsS Model.Variables.Quiz Vars.BLmsg
+
+  var isQuestionAnswered; // EjsS Model.Variables.lookang.isQuestionAnswered
 
   var _privateOdesList;
   var _ODEi_evolution1;
@@ -123,7 +129,12 @@ var _stringProperties = {};
       bg_slider : bg_slider,
       v2target : v2target,
       v1answer : v1answer,
-      txtElasticity : txtElasticity
+      txtElasticity : txtElasticity,
+      firstTry : firstTry,
+      txtGoal : txtGoal,
+      TLmsg : TLmsg,
+      BLmsg : BLmsg,
+      isQuestionAnswered : isQuestionAnswered
     };
   };
 
@@ -153,6 +164,11 @@ var _stringProperties = {};
     if(typeof json.v2target != "undefined") v2target = json.v2target;
     if(typeof json.v1answer != "undefined") v1answer = json.v1answer;
     if(typeof json.txtElasticity != "undefined") txtElasticity = json.txtElasticity;
+    if(typeof json.firstTry != "undefined") firstTry = json.firstTry;
+    if(typeof json.txtGoal != "undefined") txtGoal = json.txtGoal;
+    if(typeof json.TLmsg != "undefined") TLmsg = json.TLmsg;
+    if(typeof json.BLmsg != "undefined") BLmsg = json.BLmsg;
+    if(typeof json.isQuestionAnswered != "undefined") isQuestionAnswered = json.isQuestionAnswered;
   };
 
   function _unserialize(json) { return _model.unserialize(json); }
@@ -203,6 +219,14 @@ var _stringProperties = {};
     v2target = 0; // EjsS Model.Variables.Quiz Vars.v2target
     v1answer = 0; // EjsS Model.Variables.Quiz Vars.v1answer
     txtElasticity = ""; // EjsS Model.Variables.Quiz Vars.txtElasticity
+    firstTry = true; // EjsS Model.Variables.Quiz Vars.firstTry
+    txtGoal = ""; // EjsS Model.Variables.Quiz Vars.txtGoal
+    TLmsg = ""; // EjsS Model.Variables.Quiz Vars.TLmsg
+    BLmsg = ""; // EjsS Model.Variables.Quiz Vars.BLmsg
+  });
+
+  _model.addToReset(function() {
+    isQuestionAnswered = false; // EjsS Model.Variables.lookang.isQuestionAnswered
   });
 
   if (_inputParameters) {
@@ -228,151 +252,127 @@ var _stringProperties = {};
       case 0:  // > CustomCode.Lib Page:3
         solved = false;  // > CustomCode.Lib Page:4
         bg_slider = "Yellow";  // > CustomCode.Lib Page:5
-        if (confirm("Perfectly inelastic collision of equal masses."+"\n"  // > CustomCode.Lib Page:6
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:7
-          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:8
-          v2target = 2.0;  // > CustomCode.Lib Page:9
-          m1 = 1;  // > CustomCode.Lib Page:10
-          x1 = -1;  // > CustomCode.Lib Page:11
-          m2 = 1;  // > CustomCode.Lib Page:12
-          x2 = 0;  // > CustomCode.Lib Page:13
-          v2 = 0;  // > CustomCode.Lib Page:14
-          Cres = 0;  // > CustomCode.Lib Page:15
-          v1answer = 4.0;  // > CustomCode.Lib Page:16
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:17
-          quizmode = false;  // > CustomCode.Lib Page:18
-        }  // > CustomCode.Lib Page:19
-        break;  // > CustomCode.Lib Page:20
-      case 1:  // > CustomCode.Lib Page:21
-        solved = false;  // > CustomCode.Lib Page:22
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:23
-        if (confirm("Perfectly inelastic collision of unequal masses."+"\n"  // > CustomCode.Lib Page:24
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:25
-          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:26
-          v2target = 1.0;  // > CustomCode.Lib Page:27
-          m1 = 1;  // > CustomCode.Lib Page:28
-          x1 = -1;  // > CustomCode.Lib Page:29
-          m2 = 3;  // > CustomCode.Lib Page:30
-          x2 = 0;  // > CustomCode.Lib Page:31
-          v2 = 0;  // > CustomCode.Lib Page:32
-          Cres = 0;  // > CustomCode.Lib Page:33
-          v1answer = 4.0;  // > CustomCode.Lib Page:34
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:35
-          quizmode = false;  // > CustomCode.Lib Page:36
-        }  // > CustomCode.Lib Page:37
-        break;  // > CustomCode.Lib Page:38
-      case 2:  // > CustomCode.Lib Page:39
-        solved = false;  // > CustomCode.Lib Page:40
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:41
-        if (confirm("Perfectly elastic collision of equal masses."+"\n"  // > CustomCode.Lib Page:42
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:43
-          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:44
-          v2target = 2.0;  // > CustomCode.Lib Page:45
-          m1 = 1;  // > CustomCode.Lib Page:46
-          x1 = -1;  // > CustomCode.Lib Page:47
-          m2 = 1;  // > CustomCode.Lib Page:48
-          x2 = 0;  // > CustomCode.Lib Page:49
-          v2 = 0;  // > CustomCode.Lib Page:50
-          Cres = 1;  // > CustomCode.Lib Page:51
-          v1answer = 2.0;  // > CustomCode.Lib Page:52
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:53
-          quizmode = false;  // > CustomCode.Lib Page:54
-        }  // > CustomCode.Lib Page:55
-        break;  // > CustomCode.Lib Page:56
-      case 3:  // > CustomCode.Lib Page:57
-        solved = false;  // > CustomCode.Lib Page:58
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:59
-        if (confirm("Perfectly elastic collision of unequal masses."+"\n"  // > CustomCode.Lib Page:60
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:61
-          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:62
-          v2target = 1.0;  // > CustomCode.Lib Page:63
-          m1 = 1;  // > CustomCode.Lib Page:64
-          x1 = -1;  // > CustomCode.Lib Page:65
-          m2 = 2;  // > CustomCode.Lib Page:66
-          x2 = 0;  // > CustomCode.Lib Page:67
-          v2 = 0;  // > CustomCode.Lib Page:68
-          Cres = 1;  // > CustomCode.Lib Page:69
-          v1answer = 1.5;  // > CustomCode.Lib Page:70
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:71
-          quizmode = false;  // > CustomCode.Lib Page:72
-        }  // > CustomCode.Lib Page:73
-        break;  // > CustomCode.Lib Page:74
-      case 4:  // > CustomCode.Lib Page:75
-        solved = false;  // > CustomCode.Lib Page:76
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:77
-        if (confirm("Perfectly inelastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:78
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 1.0 after collision.")) {  // > CustomCode.Lib Page:79
-          txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:80
-          v2target = 1.0;  // > CustomCode.Lib Page:81
-          m1 = 1;  // > CustomCode.Lib Page:82
-          x1 = -1;  // > CustomCode.Lib Page:83
-          m2 = 1;  // > CustomCode.Lib Page:84
-          x2 = 0;  // > CustomCode.Lib Page:85
-          v2 = -1;  // > CustomCode.Lib Page:86
-          Cres = 0;  // > CustomCode.Lib Page:87
-          v1answer = 3.0;  // > CustomCode.Lib Page:88
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:89
-          quizmode = false;  // > CustomCode.Lib Page:90
-        }  // > CustomCode.Lib Page:91
+        displaystage = "(stage="+stage+") \n Perfectly inelastic collision of equal masses";  // > CustomCode.Lib Page:6
+        txtGoal = "GOAL: Set v1 so that v2 = 2.0 after collision";  // > CustomCode.Lib Page:7
+        txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:8
+        v2target = 2.0;  // > CustomCode.Lib Page:9
+        m1 = 1;  // > CustomCode.Lib Page:10
+        x1 = -1;  // > CustomCode.Lib Page:11
+        m2 = 1;  // > CustomCode.Lib Page:12
+        x2 = 0;  // > CustomCode.Lib Page:13
+        v2 = 0;  // > CustomCode.Lib Page:14
+        Cres = 0;  // > CustomCode.Lib Page:15
+        v1answer = 4.0;  // > CustomCode.Lib Page:16
+        break;  // > CustomCode.Lib Page:17
+      case 1:  // > CustomCode.Lib Page:18
+        solved = false;  // > CustomCode.Lib Page:19
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:20
+        displaystage = "(stage="+stage+") \n Perfectly inelastic collision of unequal masses";  // > CustomCode.Lib Page:21
+        txtGoal = "GOAL: Set v1 so that v2 = 1.0 after collision";  // > CustomCode.Lib Page:22
+        txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:23
+        v2target = 1.0;  // > CustomCode.Lib Page:24
+        m1 = 1;  // > CustomCode.Lib Page:25
+        x1 = -1;  // > CustomCode.Lib Page:26
+        m2 = 3;  // > CustomCode.Lib Page:27
+        x2 = 0;  // > CustomCode.Lib Page:28
+        v2 = 0;  // > CustomCode.Lib Page:29
+        Cres = 0;  // > CustomCode.Lib Page:30
+        v1answer = 4.0;  // > CustomCode.Lib Page:31
+        break;  // > CustomCode.Lib Page:32
+      case 2:  // > CustomCode.Lib Page:33
+        solved = false;  // > CustomCode.Lib Page:34
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:35
+        displaystage = "(stage="+stage+") \n Perfectly elastic collision of equal masses";  // > CustomCode.Lib Page:36
+        txtGoal = "GOAL: Set v1 so that v2 = 2.0 after collision";  // > CustomCode.Lib Page:37
+        txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:38
+        v2target = 2.0;  // > CustomCode.Lib Page:39
+        m1 = 1;  // > CustomCode.Lib Page:40
+        x1 = -1;  // > CustomCode.Lib Page:41
+        m2 = 1;  // > CustomCode.Lib Page:42
+        x2 = 0;  // > CustomCode.Lib Page:43
+        v2 = 0;  // > CustomCode.Lib Page:44
+        Cres = 1;  // > CustomCode.Lib Page:45
+        v1answer = 2.0;  // > CustomCode.Lib Page:46
+        break;  // > CustomCode.Lib Page:47
+      case 3:  // > CustomCode.Lib Page:48
+        solved = false;  // > CustomCode.Lib Page:49
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:50
+        displaystage = "(stage="+stage+") \n Perfectly elastic collision of unequal masses";  // > CustomCode.Lib Page:51
+        txtGoal = "GOAL: Set v1 so that v2 = 1.0 after collision";  // > CustomCode.Lib Page:52
+        txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:53
+        v2target = 1.0;  // > CustomCode.Lib Page:54
+        m1 = 1;  // > CustomCode.Lib Page:55
+        x1 = -1;  // > CustomCode.Lib Page:56
+        m2 = 2;  // > CustomCode.Lib Page:57
+        x2 = 0;  // > CustomCode.Lib Page:58
+        v2 = 0;  // > CustomCode.Lib Page:59
+        Cres = 1;  // > CustomCode.Lib Page:60
+        v1answer = 1.5;  // > CustomCode.Lib Page:61
+        break;  // > CustomCode.Lib Page:62
+      case 4:  // > CustomCode.Lib Page:63
+        solved = false;  // > CustomCode.Lib Page:64
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:65
+        displaystage = "(stage="+stage+") \n Perfectly inelastic collision of equal masses that are both initially moving";  // > CustomCode.Lib Page:66
+        txtGoal = "GOAL: Set v1 so that v2 = 1.0 after collision";  // > CustomCode.Lib Page:67
+        txtElasticity = "(perfectly) inelastic";  // > CustomCode.Lib Page:68
+        v2target = 1.0;  // > CustomCode.Lib Page:69
+        m1 = 1;  // > CustomCode.Lib Page:70
+        x1 = -1;  // > CustomCode.Lib Page:71
+        m2 = 1;  // > CustomCode.Lib Page:72
+        x2 = 0;  // > CustomCode.Lib Page:73
+        v2 = -1;  // > CustomCode.Lib Page:74
+        Cres = 0;  // > CustomCode.Lib Page:75
+        v1answer = 3.0;  // > CustomCode.Lib Page:76
+        break;  // > CustomCode.Lib Page:77
+      case 5:  // > CustomCode.Lib Page:78
+        solved = false;  // > CustomCode.Lib Page:79
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:80
+        displaystage = "(stage="+stage+") \n Perfectly elastic collision of equal masses that are both initially moving";  // > CustomCode.Lib Page:81
+        txtGoal = "GOAL: Set v1 so that v2 = 2.0 after collision";  // > CustomCode.Lib Page:82
+        txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:83
+        v2target = 2.0;  // > CustomCode.Lib Page:84
+        m1 = 1;  // > CustomCode.Lib Page:85
+        x1 = -1;  // > CustomCode.Lib Page:86
+        m2 = 1;  // > CustomCode.Lib Page:87
+        x2 = 0;  // > CustomCode.Lib Page:88
+        v2 = -0.5;  // > CustomCode.Lib Page:89
+        Cres = 1;  // > CustomCode.Lib Page:90
+        v1answer = 2.0;  // > CustomCode.Lib Page:91
         break;  // > CustomCode.Lib Page:92
-      case 5:  // > CustomCode.Lib Page:93
+      case 6:  // > CustomCode.Lib Page:93
         solved = false;  // > CustomCode.Lib Page:94
         bg_slider = "Yellow";  // > CustomCode.Lib Page:95
-        if (confirm("Perfectly elastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:96
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:97
-          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:98
-          v2target = 2.0;  // > CustomCode.Lib Page:99
-          m1 = 1;  // > CustomCode.Lib Page:100
-          x1 = -1;  // > CustomCode.Lib Page:101
-          m2 = 1;  // > CustomCode.Lib Page:102
-          x2 = 0;  // > CustomCode.Lib Page:103
-          v2 = -0.5;  // > CustomCode.Lib Page:104
-          Cres = 1;  // > CustomCode.Lib Page:105
-          v1answer = 2.0;  // > CustomCode.Lib Page:106
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:107
-          quizmode = false;  // > CustomCode.Lib Page:108
-        }  // > CustomCode.Lib Page:109
-        break;  // > CustomCode.Lib Page:110
-      case 6:  // > CustomCode.Lib Page:111
-        solved = false;  // > CustomCode.Lib Page:112
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:113
-        if (confirm("Perfectly elastic collision of equal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:114
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:115
-          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:116
-          v2target = 2.0;  // > CustomCode.Lib Page:117
-          m1 = 1;  // > CustomCode.Lib Page:118
-          x1 = -1;  // > CustomCode.Lib Page:119
-          m2 = 1;  // > CustomCode.Lib Page:120
-          x2 = 0;  // > CustomCode.Lib Page:121
-          v2 = 0.5;  // > CustomCode.Lib Page:122
-          Cres = 1;  // > CustomCode.Lib Page:123
-          v1answer = 2.0;  // > CustomCode.Lib Page:124
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:125
-          quizmode = false;  // > CustomCode.Lib Page:126
-        }  // > CustomCode.Lib Page:127
-        break;  // > CustomCode.Lib Page:128
-      case 7:  // > CustomCode.Lib Page:129
-        solved = false;  // > CustomCode.Lib Page:130
-        bg_slider = "Yellow";  // > CustomCode.Lib Page:131
-        if (confirm("Perfectly elastic collision of unequal masses that are both initially moving."+"\n"  // > CustomCode.Lib Page:132
-        +"GOAL (stage="+stage+"): Set v1 so that v2 = 2.0 after collision.")) {  // > CustomCode.Lib Page:133
-          txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:134
-          v2target = 2.0;  // > CustomCode.Lib Page:135
-          m1 = 3;  // > CustomCode.Lib Page:136
-          x1 = -1;  // > CustomCode.Lib Page:137
-          m2 = 2;  // > CustomCode.Lib Page:138
-          x2 = 0;  // > CustomCode.Lib Page:139
-          v2 = -1;  // > CustomCode.Lib Page:140
-          Cres = 1;  // > CustomCode.Lib Page:141
-          v1answer = 1.5;  // > CustomCode.Lib Page:142
-        } else {  //user clicks "cancel"  // > CustomCode.Lib Page:143
-          quizmode = false;  // > CustomCode.Lib Page:144
-        }  // > CustomCode.Lib Page:145
-        break;  // > CustomCode.Lib Page:146
-      default:  // > CustomCode.Lib Page:147
-        alert("If you see this message, there's probably an error in the code.");  // > CustomCode.Lib Page:148
-    }  // > CustomCode.Lib Page:149
-  }  // > CustomCode.Lib Page:150
+        displaystage = "(stage="+stage+") \n Perfectly elastic collision of equal masses that are both initially moving";  // > CustomCode.Lib Page:96
+        txtGoal = "GOAL: Set v1 so that v2 = 2.0 after collision";  // > CustomCode.Lib Page:97
+        txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:98
+        v2target = 2.0;  // > CustomCode.Lib Page:99
+        m1 = 1;  // > CustomCode.Lib Page:100
+        x1 = -1;  // > CustomCode.Lib Page:101
+        m2 = 1;  // > CustomCode.Lib Page:102
+        x2 = 0;  // > CustomCode.Lib Page:103
+        v2 = 0.5;  // > CustomCode.Lib Page:104
+        Cres = 1;  // > CustomCode.Lib Page:105
+        v1answer = 2.0;  // > CustomCode.Lib Page:106
+        break;  // > CustomCode.Lib Page:107
+      case 7:  // > CustomCode.Lib Page:108
+        solved = false;  // > CustomCode.Lib Page:109
+        bg_slider = "Yellow";  // > CustomCode.Lib Page:110
+        displaystage = "(stage="+stage+") \n Perfectly elastic collision of unequal masses that are both initially moving";  // > CustomCode.Lib Page:111
+        txtGoal = "GOAL: Set v1 so that v2 = 2.0 after collision";  // > CustomCode.Lib Page:112
+        txtElasticity = "(perfectly) elastic";  // > CustomCode.Lib Page:113
+        v2target = 2.0;  // > CustomCode.Lib Page:114
+        m1 = 3;  // > CustomCode.Lib Page:115
+        x1 = -1;  // > CustomCode.Lib Page:116
+        m2 = 2;  // > CustomCode.Lib Page:117
+        x2 = 0;  // > CustomCode.Lib Page:118
+        v2 = -1;  // > CustomCode.Lib Page:119
+        Cres = 1;  // > CustomCode.Lib Page:120
+        v1answer = 1.5;  // > CustomCode.Lib Page:121
+        break;  // > CustomCode.Lib Page:122
+      default:  // > CustomCode.Lib Page:123
+        alert("If you see this message, there's probably an error in the code...");  // > CustomCode.Lib Page:124
+    }  // > CustomCode.Lib Page:125
+  }  // > CustomCode.Lib Page:126
 
   function stage_Switcher() {  // > CustomCode.Stage Switcher:1
     stage = parseInt(selected[0].slice(-1));  // > CustomCode.Stage Switcher:2
@@ -380,39 +380,172 @@ var _stringProperties = {};
     setup(stage);  // > CustomCode.Stage Switcher:4
   }  // > CustomCode.Stage Switcher:5
 
+  // Assume ECMAScript 6; Chrome >=49, Edge >=14, Firefox >=41, Opera >=36, Safari >=8  // > CustomCode.QuestionLib:1
+  const debugMode = true;  // > CustomCode.QuestionLib:2
+  const _questionLib = {};  // > CustomCode.QuestionLib:3
+  _questionLib.stack = [];  // > CustomCode.QuestionLib:4
+  _questionLib.history = Object.create(null);  // > CustomCode.QuestionLib:5
+  _questionLib.questionMarksAwarded = Object.create(null);  // > CustomCode.QuestionLib:6
+  const _nullFunction = debugMode ?  // > CustomCode.QuestionLib:7
+    console.log  // > CustomCode.QuestionLib:8
+    :  // > CustomCode.QuestionLib:9
+    function(){};  // > CustomCode.QuestionLib:10
+  function _debugPrint(msg) {  // > CustomCode.QuestionLib:11
+    if (debugMode) {  // > CustomCode.QuestionLib:12
+      console.log(msg);  // > CustomCode.QuestionLib:13
+    }  // > CustomCode.QuestionLib:14
+  }  // > CustomCode.QuestionLib:15
+  function _getCurrentQuestion() {  // > CustomCode.QuestionLib:16
+    if (!isQuestionStarted()) {  // > CustomCode.QuestionLib:17
+      return null;  // > CustomCode.QuestionLib:18
+    }  // > CustomCode.QuestionLib:19
+    return _questionLib.stack[_questionLib.stack.length - 1];  // > CustomCode.QuestionLib:20
+  }  // > CustomCode.QuestionLib:21
+  function isQuestionStarted() {  // > CustomCode.QuestionLib:22
+    return _questionLib.stack.length > 0;  // > CustomCode.QuestionLib:23
+  }  // > CustomCode.QuestionLib:24
+  // for assessment.json event - start  // > CustomCode.QuestionLib:25
+  function startQuestion(questionName) {  // > CustomCode.QuestionLib:26
+    _view._addInteraction(_nullFunction, {action:"questionStart", name:questionName}, {element:"questionLib", property:"value"});  // > CustomCode.QuestionLib:27
+    _debugPrint("Start question: " + questionName);  // > CustomCode.QuestionLib:28
+      // > CustomCode.QuestionLib:29
+    _questionLib.stack.push(questionName);  // > CustomCode.QuestionLib:30
+  }  // > CustomCode.QuestionLib:31
+  // for assessment.json history  // > CustomCode.QuestionLib:32
+  function addQuestionHistory(history, questionName=null) {  // > CustomCode.QuestionLib:33
+    if (questionName === null && isQuestionStarted()) {  // > CustomCode.QuestionLib:34
+      questionName = _getCurrentQuestion();  // > CustomCode.QuestionLib:35
+    }  // > CustomCode.QuestionLib:36
+      // > CustomCode.QuestionLib:37
+    if (!(questionName in _questionLib.history)) {  // > CustomCode.QuestionLib:38
+      _debugPrint("Create question history for " + questionName);  // > CustomCode.QuestionLib:39
+        // > CustomCode.QuestionLib:40
+      _questionLib.history[questionName] = [];  // > CustomCode.QuestionLib:41
+    }  // > CustomCode.QuestionLib:42
+    if (debugMode) {  // > CustomCode.QuestionLib:43
+      console.log("Push \"" + history + "\" to question history for " + questionName);  // > CustomCode.QuestionLib:44
+    }  // > CustomCode.QuestionLib:45
+    _questionLib.history[questionName].push(history);  // > CustomCode.QuestionLib:46
+    _flushQuestionHistory(questionName);  // > CustomCode.QuestionLib:47
+  }  // > CustomCode.QuestionLib:48
+  function _flushQuestionHistory(questionName) {  // > CustomCode.QuestionLib:49
+    // TODO: check if need to flush  // > CustomCode.QuestionLib:50
+    if (questionName === _getCurrentQuestion()) {  // > CustomCode.QuestionLib:51
+      const outputHistory = _getQuestionHistory(questionName);  // > CustomCode.QuestionLib:52
+      _view._addInteraction(_nullFunction, outputHistory, {property: "historyFor" + questionName, element: "questionLib"});  // > CustomCode.QuestionLib:53
+    }  // > CustomCode.QuestionLib:54
+  }  // > CustomCode.QuestionLib:55
+  function _getQuestionHistory(questionName) {  // > CustomCode.QuestionLib:56
+    if (questionName in _questionLib.history) {  // > CustomCode.QuestionLib:57
+      return _questionLib.history[questionName].join("\n");  // > CustomCode.QuestionLib:58
+    } else {  // > CustomCode.QuestionLib:59
+      _debugPrint("No question \"" + questionName + "\" exists");  // > CustomCode.QuestionLib:60
+      return "";  // > CustomCode.QuestionLib:61
+    }  // > CustomCode.QuestionLib:62
+  }  // > CustomCode.QuestionLib:63
+  // for assessment.json event - states  // > CustomCode.QuestionLib:64
+  function onAnswer(answer, isCorrect=false, history=answer, questionName=null) {  // > CustomCode.QuestionLib:65
+    if (questionName === null && isQuestionStarted()) {  // > CustomCode.QuestionLib:66
+      questionName = _questionLib.stack[_questionLib.stack.length - 1];  // > CustomCode.QuestionLib:67
+    }  // > CustomCode.QuestionLib:68
+    if (questionName !== null) {  // > CustomCode.QuestionLib:69
+      const explainer = Object.create(null);  // > CustomCode.QuestionLib:70
+      explainer[true] = " ✅";  // > CustomCode.QuestionLib:71
+      explainer[false] = " ❌";  // > CustomCode.QuestionLib:72
+      addQuestionHistory(history + explainer[isCorrect], questionName);  // > CustomCode.QuestionLib:73
+      if (questionName === _getCurrentQuestion()) {  // > CustomCode.QuestionLib:74
+        _view._addInteraction(_nullFunction, {name:questionName, answer:answer, isCorrect:isCorrect, action:"questionAnswer"}, {property: "answer", element:"questionLib"});  // > CustomCode.QuestionLib:75
+      }  // > CustomCode.QuestionLib:76
+    }  // > CustomCode.QuestionLib:77
+  }  // > CustomCode.QuestionLib:78
+  // for assessment.json event - end  // > CustomCode.QuestionLib:79
+  function endQuestion() {  // > CustomCode.QuestionLib:80
+    if (_questionLib.stack.length > 0) {  // > CustomCode.QuestionLib:81
+      const questionName = _questionLib.stack.pop();  // > CustomCode.QuestionLib:82
+      _debugPrint("End question: " + questionName);  // > CustomCode.QuestionLib:83
+      _view._addInteraction(_nullFunction, {action:"questionEnd", name:questionName}, {element: "questionLib", property: "value"});  // > CustomCode.QuestionLib:84
+    }  // > CustomCode.QuestionLib:85
+  }  // > CustomCode.QuestionLib:86
+  // for assessment.json marks  // > CustomCode.QuestionLib:87
+  function awardQuestionMarks(marks=1) {  // > CustomCode.QuestionLib:88
+    if (isQuestionStarted()) {  // > CustomCode.QuestionLib:89
+      const questionName = _getCurrentQuestion();  // > CustomCode.QuestionLib:90
+      _questionLib.questionMarksAwarded[questionName] = 1;  // > CustomCode.QuestionLib:91
+        // > CustomCode.QuestionLib:92
+      for (; _questionLib.questionMarksAwarded[questionName] < marks + 1; _questionLib.questionMarksAwarded[questionName]++) {  // > CustomCode.QuestionLib:93
+        _view._addInteraction(_nullFunction, _questionLib.questionMarksAwarded[questionName], {element:"questionLib", property:"awardMarkFor"+questionName});  // > CustomCode.QuestionLib:94
+      }  // > CustomCode.QuestionLib:95
+    }  // > CustomCode.QuestionLib:96
+  }  // > CustomCode.QuestionLib:97
+  function resetQuestionMarks(questionName) {  // > CustomCode.QuestionLib:98
+    _questionLib.questionMarksAwarded[questionName] = 0;  // > CustomCode.QuestionLib:99
+  }  // > CustomCode.QuestionLib:100
+  function questionInstantMark(questionName, message) {  // > CustomCode.QuestionLib:101
+    startQuestion(questionName);  // > CustomCode.QuestionLib:102
+    _debugPrint("" + message);  // > CustomCode.QuestionLib:103
+    if (message) {  // > CustomCode.QuestionLib:104
+      addQuestionHistory(message);  // > CustomCode.QuestionLib:105
+    } else {  // > CustomCode.QuestionLib:106
+      _flushQuestionHistory(questionName);  // > CustomCode.QuestionLib:107
+    }  // > CustomCode.QuestionLib:108
+    awardQuestionMarks();  // > CustomCode.QuestionLib:109
+    endQuestion();  // > CustomCode.QuestionLib:110
+  }  // > CustomCode.QuestionLib:111
+  function questionAppendHistory(questionName, message) {  // > CustomCode.QuestionLib:112
+    if (!(questionName in _questionLib.questionMarksAwarded)) {  // > CustomCode.QuestionLib:113
+      _questionLib.questionMarksAwarded[questionName] = 0;  // > CustomCode.QuestionLib:114
+    }  // > CustomCode.QuestionLib:115
+    let shouldPushQuestion = _getCurrentQuestion() !== questionName;  // > CustomCode.QuestionLib:116
+    if (shouldPushQuestion) {  // > CustomCode.QuestionLib:117
+      startQuestion(questionName);  // > CustomCode.QuestionLib:118
+    }  // > CustomCode.QuestionLib:119
+    awardQuestionMarks(_questionLib.questionMarksAwarded[questionName])  // > CustomCode.QuestionLib:120
+    addQuestionHistory(message);  // > CustomCode.QuestionLib:121
+    if (shouldPushQuestion) {  // > CustomCode.QuestionLib:122
+      endQuestion();  // > CustomCode.QuestionLib:123
+    }  // > CustomCode.QuestionLib:124
+  }  // > CustomCode.QuestionLib:125
+  function resetQuestionHistory(questionName) {  // > CustomCode.QuestionLib:126
+    _questionLib.history[questionName] = [];  // > CustomCode.QuestionLib:127
+  }  // > CustomCode.QuestionLib:128
+  function resetQuestion(questionName) {  // > CustomCode.QuestionLib:129
+    resetQuestionHistory(questionName);  // > CustomCode.QuestionLib:130
+    resetQuestionMarks(questionName);  // > CustomCode.QuestionLib:131
+  }  // > CustomCode.QuestionLib:132
+
   _model.addToInitialization(function() {
     if (!__pagesEnabled["Init Page"]) return;
-    if (quizmode) {  // > Initialization.Init Page:1
-      setup(stage);  // > Initialization.Init Page:2
-    } else {  // > Initialization.Init Page:3
-      //no need highlighting  // > Initialization.Init Page:4
-      bg_slider = "White";  // > Initialization.Init Page:5
-    }  // > Initialization.Init Page:6
+    if (quizmode) {  // > Initialization.Init Page:1
+      setup(stage);  // > Initialization.Init Page:2
+    } else {  // > Initialization.Init Page:3
+      //no need highlighting  // > Initialization.Init Page:4
+      bg_slider = "White";  // > Initialization.Init Page:5
+    }  // > Initialization.Init Page:6
   });
 
   _model.addToInitialization(function() {
     if (!__pagesEnabled["GraphAxes"]) return;
-    //position-time  // > Initialization.GraphAxes:1
-    //_view.plottingPanelPos.getAxisX().setPosition([0.0,0.4]);  //slightly below midline  // > Initialization.GraphAxes:2
-    _view.plottingPanelPos.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:3
-    _view.plottingPanelPos.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:4
-    _view.plottingPanelPos.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:5
-    //velocity-time  // > Initialization.GraphAxes:6
-    _view.plottingPanelVel.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:7
-    _view.plottingPanelVel.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:8
-    _view.plottingPanelVel.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:9
-    _view.plottingPanelVel.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:10
-    //momentum-time  // > Initialization.GraphAxes:11
-    //_view.plottingPanelMom.getAxisX().setPosition([0.0,0.5]);  // > Initialization.GraphAxes:12
-    _view.plottingPanelMom.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:13
-    _view.plottingPanelMom.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:14
-    _view.plottingPanelMom.getTitleY().setPosition([1,0.70]);  // > Initialization.GraphAxes:15
-    //energy-time  // > Initialization.GraphAxes:16
-    _view.plottingPanelErg.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:17
-    _view.plottingPanelErg.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:18
-    _view.plottingPanelErg.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:19
-    //_view.plottingPanelErg.getAxisY().setPosition([1,0.055]);  //y-value accounts for MarginY?  // > Initialization.GraphAxes:20
-    _view.plottingPanelErg.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:21
+    //position-time  // > Initialization.GraphAxes:1
+    //_view.plottingPanelPos.getAxisX().setPosition([0.0,0.4]);  //slightly below midline  // > Initialization.GraphAxes:2
+    _view.plottingPanelPos.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:3
+    _view.plottingPanelPos.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:4
+    _view.plottingPanelPos.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:5
+    //velocity-time  // > Initialization.GraphAxes:6
+    _view.plottingPanelVel.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:7
+    _view.plottingPanelVel.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:8
+    _view.plottingPanelVel.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:9
+    _view.plottingPanelVel.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:10
+    //momentum-time  // > Initialization.GraphAxes:11
+    //_view.plottingPanelMom.getAxisX().setPosition([0.0,0.5]);  // > Initialization.GraphAxes:12
+    _view.plottingPanelMom.getTitleX().setPosition([0.05,0.25]);  // > Initialization.GraphAxes:13
+    _view.plottingPanelMom.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:14
+    _view.plottingPanelMom.getTitleY().setPosition([1,0.70]);  // > Initialization.GraphAxes:15
+    //energy-time  // > Initialization.GraphAxes:16
+    _view.plottingPanelErg.getAxisX().setPosition([0,1]);  //at top  // > Initialization.GraphAxes:17
+    _view.plottingPanelErg.getTitleX().setPosition([0.05,1]);  // > Initialization.GraphAxes:18
+    _view.plottingPanelErg.getAxisY().setPosition([1,0]);  // > Initialization.GraphAxes:19
+    //_view.plottingPanelErg.getAxisY().setPosition([1,0.055]);  //y-value accounts for MarginY?  // > Initialization.GraphAxes:20
+    _view.plottingPanelErg.getTitleY().setPosition([1,0.75]);  // > Initialization.GraphAxes:21
   });
 
   _model.addToInitialization(function() {
@@ -428,16 +561,25 @@ var _stringProperties = {};
 
   _model.addToFixedRelations(function() {
     if (!__pagesEnabled["Constraints"]) return;
-    P1=m1*v1;  // > FixedRelations.Constraints:1
-    P2=m2*v2;  // > FixedRelations.Constraints:2
-    T1=0.5*m1*v1*v1;  // > FixedRelations.Constraints:3
-    T2=0.5*m2*v2*v2;  // > FixedRelations.Constraints:4
-    E=T1+T2;  // > FixedRelations.Constraints:5
-      // > FixedRelations.Constraints:6
-    displaystage = "";  // > FixedRelations.Constraints:7
-    if (quizmode) {  // > FixedRelations.Constraints:8
-      displaystage = "stage="+_view._format(stage,"0");  // > FixedRelations.Constraints:9
-    }  // > FixedRelations.Constraints:10
+    P1=m1*v1;  // > FixedRelations.Constraints:1
+    P2=m2*v2;  // > FixedRelations.Constraints:2
+    T1=0.5*m1*v1*v1;  // > FixedRelations.Constraints:3
+    T2=0.5*m2*v2*v2;  // > FixedRelations.Constraints:4
+    E=T1+T2;  // > FixedRelations.Constraints:5
+    //displaystage = "";  // > FixedRelations.Constraints:6
+    //if (quizmode) {  // > FixedRelations.Constraints:7
+    //  displaystage = "stage="+_view._format(stage,"0");  // > FixedRelations.Constraints:8
+    //}  // > FixedRelations.Constraints:9
+    // to control visual elements of interactivity  // > FixedRelations.Constraints:10
+    TLmsg = "";  // > FixedRelations.Constraints:11
+    BLmsg = "";  // > FixedRelations.Constraints:12
+    if (quizmode) {  // > FixedRelations.Constraints:13
+      TLmsg = displaystage;  // > FixedRelations.Constraints:14
+      BLmsg = txtGoal;  // > FixedRelations.Constraints:15
+    } else {  // > FixedRelations.Constraints:16
+      //no need highlighting  // > FixedRelations.Constraints:17
+      bg_slider = "White";  // > FixedRelations.Constraints:18
+    }  // > FixedRelations.Constraints:19
   });
 
   _model.addToFixedRelations(function() { _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); });
@@ -623,12 +765,11 @@ var _stringProperties = {};
         var x2 = _aState[__cOut++];
         var t = _aState[__cOut++];
       // Preliminary code: Code to be executed before rate equations are evaluated
-        // May be problematic to put this here as it runs at every time step  // > Preliminary code for ODE.Evol Page:1
-        // Put in Initialization instead  // > Preliminary code for ODE.Evol Page:2
-          // > Preliminary code for ODE.Evol Page:3
-        //if (quizmode) {  // > Preliminary code for ODE.Evol Page:4
-        //  setup(stage);  // > Preliminary code for ODE.Evol Page:5
-        //}  // > Preliminary code for ODE.Evol Page:6
+        // May be problematic to put this here as it runs at every time step  // > Preliminary code for ODE.Evol Page:1
+        // Put in Initialization instead  // > Preliminary code for ODE.Evol Page:2
+        //if (quizmode) {  // > Preliminary code for ODE.Evol Page:3
+        //  setup(stage);  // > Preliminary code for ODE.Evol Page:4
+        //}  // > Preliminary code for ODE.Evol Page:5
       // Compute the rate
         var __cRate=0;
         _aRate[__cRate++] = v1; // Rate for ODE: Evol Page:x1
@@ -729,37 +870,39 @@ var _stringProperties = {};
       };
 
       function __userDefinedAction() {
-        // calculate new velocities  // > Event action for page Evol Page:1
-        new_v1=(m1*v1+m2*v2+m2*Cres*(v2-v1))/(m1+m2);  // > Event action for page Evol Page:2
-        new_v2=(m1*v1+m2*v2+m1*Cres*(v1-v2))/(m1+m2);  // > Event action for page Evol Page:3
-          // > Event action for page Evol Page:4
-        // mark quiz if needed  // > Event action for page Evol Page:5
-        if (quizmode) {  // > Event action for page Evol Page:6
-          if (v1 == v1answer && new_v2 == v2target) {  // > Event action for page Evol Page:7
-            solved = true;  // > Event action for page Evol Page:8
-            stage += 1;  // > Event action for page Evol Page:9
-          }  // > Event action for page Evol Page:10
-        }  // > Event action for page Evol Page:11
-          // > Event action for page Evol Page:12
-        // update velocities  // > Event action for page Evol Page:13
-        v1=new_v1;  // > Event action for page Evol Page:14
-        v2=new_v2;  // > Event action for page Evol Page:15
-          // > Event action for page Evol Page:16
-        // switch stage  // > Event action for page Evol Page:17
-        if (quizmode && stage > 7) {  // > Event action for page Evol Page:18
-          _pause();  // > Event action for page Evol Page:19
-          alert("Congratulations! You have cleared the final stage.");  // > Event action for page Evol Page:20
-          stage = 0;  // > Event action for page Evol Page:21
-          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:22
-          quizmode = false;  // > Event action for page Evol Page:23
-        } else if (quizmode && solved) {  // > Event action for page Evol Page:24
-          _pause();  // > Event action for page Evol Page:25
-          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:26
-          //_view.comboBoxStage.getSelectedOptions().setValue("stage="+_view._format(stage,"0"));  // > Event action for page Evol Page:27
-          setup(stage);  // > Event action for page Evol Page:28
-        } else {  // > Event action for page Evol Page:29
-          // do nothing  // > Event action for page Evol Page:30
-        }  // > Event action for page Evol Page:31
+        // calculate new velocities  // > Event action for page Evol Page:1
+        new_v1=(m1*v1+m2*v2+m2*Cres*(v2-v1))/(m1+m2);  // > Event action for page Evol Page:2
+        new_v2=(m1*v1+m2*v2+m1*Cres*(v1-v2))/(m1+m2);  // > Event action for page Evol Page:3
+        // mark quiz if needed  // > Event action for page Evol Page:4
+        if (quizmode) {  // > Event action for page Evol Page:5
+          if (v1 == v1answer && new_v2 == v2target) {  // > Event action for page Evol Page:6
+            solved = true;  // > Event action for page Evol Page:7
+            awardQuestionMarks(1); // moodle  // > Event action for page Evol Page:8
+            stage += 1;  // > Event action for page Evol Page:9
+          }  // > Event action for page Evol Page:10
+          // display of history  // > Event action for page Evol Page:11
+          onAnswer(v1, solved);  // > Event action for page Evol Page:12
+          endQuestion(); // stamp the end of Question   // > Event action for page Evol Page:13
+        }  // > Event action for page Evol Page:14
+        // update velocities  // > Event action for page Evol Page:15
+        v1=new_v1;  // > Event action for page Evol Page:16
+        v2=new_v2;  // > Event action for page Evol Page:17
+        // switch stage  // > Event action for page Evol Page:18
+        if (quizmode && stage > 7) {  // > Event action for page Evol Page:19
+          _pause();  // > Event action for page Evol Page:20
+          alert("Congratulations! You have cleared the final stage.");  // > Event action for page Evol Page:21
+          stage = 0;  // > Event action for page Evol Page:22
+          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:23
+          quizmode = false;  // > Event action for page Evol Page:24
+        } else if (quizmode && solved) {  // > Event action for page Evol Page:25
+          _pause();  // > Event action for page Evol Page:26
+          _initialize(); // reset graphs  // > Event action for page Evol Page:27
+          selected[0] = "stage="+_view._format(stage,"0");  // > Event action for page Evol Page:28
+          //_view.comboBoxStage.getSelectedOptions().setValue("stage="+_view._format(stage,"0"));  // > Event action for page Evol Page:29
+          setup(stage);  // > Event action for page Evol Page:30
+        } else {  // > Event action for page Evol Page:31
+          // do nothing  // > Event action for page Evol Page:32
+        }  // > Event action for page Evol Page:33
         return true;
       }
 
@@ -823,9 +966,22 @@ var _stringProperties = {};
           _view.labelTarget.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'labelTarget'
           _view.playPauseButton.setAction("OffClick", _pause); // HtmlView Page setting action 'OffClick' for element 'playPauseButton'
           _view.playPauseButton.linkProperty("State",  function() { return _isPaused; } ); // HtmlView Page linking property 'State' for element 'playPauseButton'
-          _view.playPauseButton.setAction("OnClick", _play); // HtmlView Page setting action 'OnClick' for element 'playPauseButton'
+          _view.playPauseButton.setAction("OnClick", function(_data,_info) {
+  _play();
+  //Use isQuestionStarted() because Moodle and EJSS have not started "talking"
+  if (quizmode && (!isQuestionStarted() && !isQuestionAnswered)) {
+    startQuestion(`Q${stage}`); //moodle part of the start
+    //addQuestionHistory(`Target Measurement: ${l_answer}`); //moodle part of the history
+    addQuestionHistory(`v1 = ${v1}, v1answer = ${v1answer}`); //moodle part of the history
+  }
+
+}); // HtmlView Page setting action 'OnClick' for element 'playPauseButton'
           _view.stepButton.setAction("OnClick", _step); // HtmlView Page setting action 'OnClick' for element 'stepButton'
-          _view.initButton.setAction("OnClick", _initialize); // HtmlView Page setting action 'OnClick' for element 'initButton'
+          _view.initButton.setAction("OnClick", function(_data,_info) {
+  _pause();
+  _initialize();
+
+}); // HtmlView Page setting action 'OnClick' for element 'initButton'
           _view.resetButton.setAction("OnClick", _reset); // HtmlView Page setting action 'OnClick' for element 'resetButton'
           _view.checkBoxQuiz.linkProperty("Checked",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Checked' for element 'checkBoxQuiz'
           _view.checkBoxQuiz.setAction("OnCheckOff", _initialize); // HtmlView Page setting action 'OnCheckOff' for element 'checkBoxQuiz'
@@ -837,7 +993,8 @@ var _stringProperties = {};
           _view.comboBoxStage.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'comboBoxStage'
           _view.comboBoxStage.linkProperty("SelectedOptions",  function() { return selected; }, function(_v) { selected = _v; } ); // HtmlView Page linking property 'SelectedOptions' for element 'comboBoxStage'
           _view.drawingPanel.linkProperty("TRMessage",  function() { return "time="+_view._format(t,"0.00"); } ); // HtmlView Page linking property 'TRMessage' for element 'drawingPanel'
-          _view.drawingPanel.linkProperty("BLMessage",  function() { return displaystage; }, function(_v) { displaystage = _v; } ); // HtmlView Page linking property 'BLMessage' for element 'drawingPanel'
+          _view.drawingPanel.linkProperty("BLMessage",  function() { return BLmsg; }, function(_v) { BLmsg = _v; } ); // HtmlView Page linking property 'BLMessage' for element 'drawingPanel'
+          _view.drawingPanel.linkProperty("TLMessage",  function() { return TLmsg; }, function(_v) { TLmsg = _v; } ); // HtmlView Page linking property 'TLMessage' for element 'drawingPanel'
           _view.shape_m1.linkProperty("SizeX",  function() { return viz_mass*Math.sqrt(m1); } ); // HtmlView Page linking property 'SizeX' for element 'shape_m1'
           _view.shape_m1.linkProperty("X",  function() { return x1; }, function(_v) { x1 = _v; } ); // HtmlView Page linking property 'X' for element 'shape_m1'
           _view.shape_m1.linkProperty("SizeY",  function() { return viz_mass*Math.sqrt(m1); } ); // HtmlView Page linking property 'SizeY' for element 'shape_m1'
@@ -1164,12 +1321,12 @@ function Collisions1D_View_0 (_topFrame) {
       .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelPos'
       .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelPos'
       .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelPos'
-      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelPos'
       .setProperty("TitleY","position") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelPos'
       .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelPos'
       .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelPos'
       .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelPos'
       .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelPos'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelPos'
       .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'plottingPanelPos'
       ;
 
@@ -1234,14 +1391,14 @@ function Collisions1D_View_0 (_topFrame) {
     _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelMom", _view.subPanelRight) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelMom'
       .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelMom'
       .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelMom'
-      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelMom'
-      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelMom'
       .setProperty("TRMessage","black: total") // EJsS HtmlView.HtmlView Page: setting property 'TRMessage' for element 'plottingPanelMom'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelMom'
       .setProperty("TitleY","momentum") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelMom'
       .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelMom'
       .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelMom'
       .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelMom'
       .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelMom'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelMom'
       .setProperty("Display","block") // EJsS HtmlView.HtmlView Page: setting property 'Display' for element 'plottingPanelMom'
       ;
 
@@ -1274,14 +1431,14 @@ function Collisions1D_View_0 (_topFrame) {
     _view._addElement(EJSS_DRAWING2D.plottingPanel,"plottingPanelErg", _view.subPanelRight) // EJsS HtmlView.HtmlView Page: declaration of element 'plottingPanelErg'
       .setProperty("Height",200) // EJsS HtmlView.HtmlView Page: setting property 'Height' for element 'plottingPanelErg'
       .setProperty("Width","100%") // EJsS HtmlView.HtmlView Page: setting property 'Width' for element 'plottingPanelErg'
-      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelErg'
-      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelErg'
       .setProperty("TRMessage","black: total") // EJsS HtmlView.HtmlView Page: setting property 'TRMessage' for element 'plottingPanelErg'
+      .setProperty("Gutters",[0,0,0,0]) // EJsS HtmlView.HtmlView Page: setting property 'Gutters' for element 'plottingPanelErg'
       .setProperty("TitleY","energy") // EJsS HtmlView.HtmlView Page: setting property 'TitleY' for element 'plottingPanelErg'
       .setProperty("AutoScaleY",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleY' for element 'plottingPanelErg'
       .setProperty("TitleX","time") // EJsS HtmlView.HtmlView Page: setting property 'TitleX' for element 'plottingPanelErg'
       .setProperty("AutoScaleX",true) // EJsS HtmlView.HtmlView Page: setting property 'AutoScaleX' for element 'plottingPanelErg'
       .setProperty("MarginY",20) // EJsS HtmlView.HtmlView Page: setting property 'MarginY' for element 'plottingPanelErg'
+      .setProperty("Title","") // EJsS HtmlView.HtmlView Page: setting property 'Title' for element 'plottingPanelErg'
       ;
 
     _view._addElement(EJSS_DRAWING2D.trail,"trailZero4", _view.plottingPanelErg) // EJsS HtmlView.HtmlView Page: declaration of element 'trailZero4'
@@ -1337,7 +1494,7 @@ function Collisions1D_View_0 (_topFrame) {
     <hr />
     <p></p>
     <div id="copyright_message">
-      <div class="cc_left"  style="float:left">&#169; 2022, Open Source Physics. Compiled with EJS 6.1 BETA (201115)
+      <div class="cc_left"  style="float:left">&#169; 2023, Open Source Physics. Compiled with EJS 6.1 BETA (201115)
 </div>
       <div class="cc_right" style="float:right">    Released under a <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US"> <img alt="Creative Commons Attribution-NonCommercial-ShareAlike" src="_ejs_library/images/cc_icon.png" /> </a> license.</div>
     </div>
