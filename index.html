@@ -947,20 +947,20 @@ var _stringProperties = {};
         case 0:
           _view.slider_m1.linkProperty("Value",  function() { return m1; }, function(_v) { m1 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_m1'
           _view.slider_m1.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_m1'
-          _view.slider_m1.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m1'
+          _view.slider_m1.linkProperty("Disabled",  function() { return quizmode || _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m1'
           _view.slider_m2.linkProperty("Value",  function() { return m2; }, function(_v) { m2 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_m2'
           _view.slider_m2.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_m2'
-          _view.slider_m2.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m2'
+          _view.slider_m2.linkProperty("Disabled",  function() { return quizmode || _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_m2'
           _view.slider_COR.linkProperty("Value",  function() { return Cres; }, function(_v) { Cres = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_COR'
           _view.slider_COR.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_COR'
-          _view.slider_COR.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_COR'
+          _view.slider_COR.linkProperty("Disabled",  function() { return quizmode || _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_COR'
           _view.slider_v1.linkProperty("Background",  function() { return bg_slider; }, function(_v) { bg_slider = _v; } ); // HtmlView Page linking property 'Background' for element 'slider_v1'
           _view.slider_v1.linkProperty("Value",  function() { return v1; }, function(_v) { v1 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_v1'
           _view.slider_v1.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_v1'
           _view.slider_v1.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_v1'
           _view.slider_v2.linkProperty("Value",  function() { return v2; }, function(_v) { v2 = _v; } ); // HtmlView Page linking property 'Value' for element 'slider_v2'
           _view.slider_v2.setAction("OnChange", _resetSolvers); // HtmlView Page setting action 'OnChange' for element 'slider_v2'
-          _view.slider_v2.linkProperty("Disabled",  function() { return _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_v2'
+          _view.slider_v2.linkProperty("Disabled",  function() { return quizmode || _isPlaying; } ); // HtmlView Page linking property 'Disabled' for element 'slider_v2'
           _view.field_v2target.linkProperty("Value",  function() { return v2target; }, function(_v) { v2target = _v; } ); // HtmlView Page linking property 'Value' for element 'field_v2target'
           _view.field_v2target.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'field_v2target'
           _view.labelTarget.linkProperty("Visibility",  function() { return quizmode; }, function(_v) { quizmode = _v; } ); // HtmlView Page linking property 'Visibility' for element 'labelTarget'
@@ -972,7 +972,7 @@ var _stringProperties = {};
   if (quizmode && (!isQuestionStarted() && !isQuestionAnswered)) {
     startQuestion(`Q${stage}`); //moodle part of the start
     //addQuestionHistory(`Target Measurement: ${l_answer}`); //moodle part of the history
-    addQuestionHistory(`v1 = ${v1}, v1answer = ${v1answer}`); //moodle part of the history
+    addQuestionHistory(`v1answer = ${v1answer}`); //moodle part of the history
   }
 
 }); // HtmlView Page setting action 'OnClick' for element 'playPauseButton'
